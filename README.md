@@ -92,14 +92,14 @@ in case of multiple versions of php
 sudo update-alternatives --set php /usr/bin/php7.2
 ```
 
-###Nodejs installation
+#### Nodejs installation
 
 ```shell
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
-###Troubleshooting:
+#### Troubleshooting:
 
 In case you have this error in the loris-error.log: sudo cat /var/log/apache2/loris-error.log
 
@@ -139,8 +139,8 @@ sudo apt-get install libc6 libstdc++6 imagemagick perl
 Download
 1) minc-toolkit-<version>.deb
 2) minc-toolkit-testsuite-<version>.deb
-3) bic-mni-models-<version>.deb
 4) beast-library-<version>.deb
+3) bic-mni-models-<version>.deb
 
 ```shell
 cd ~
@@ -190,3 +190,62 @@ UPDATE `LORIS`.`LorisMenu` SET `Visible`='false' WHERE `ID`='34';
 ![](docs/pics/admin_menu_neo.png)
 
 ![](docs/pics/bar.png)
+
+6. Quality control
+
+In order to mark all newly inserted mincs as "Pass"
+
+Images in our case are ought to be initialized with a 'PASS' label upon being imported to LORIS. This is done by triger "files_AFTER_INSERT"
+
+```shell
+CREATE DEFINER = CURRENT_USER TRIGGER `LORIS`.`files_AFTER_INSERT` AFTER INSERT ON `files` FOR EACH ROW
+BEGIN
+	INSERT INTO files_qcstatus
+	SET	FileID = NEW.FileID,
+     SeriesUID = NEW.SeriesUID,
+     EchoTime = NEW.EchoTime,
+     QCStatus = "Pass",
+     QCFirstChangeTime = unix_timestamp( NOW() ),
+     QCLastChangeTime = unix_timestamp( NOW() );
+END
+```
+
+Loris does not store the StudyID of the mincs files into the database. One workaround is to modify the "files" table
+
+```shell
+ALTER TABLE files ADD FileStudyID TEXT DEFAULT NULL;
+```
+
+and execute fill_studyid.py which read the mnic header of each file to fill the missing studyid information.
+
+```shell
+sudo apt-get install minc-tools
+python fill_studyid.py
+```
+
+In order to discriminize which files with "PASS" have been examined for the next stage we add one column
+
+```shell
+ALTER TABLE files ADD FileStudyComplete INT DEFAULT 0;
+```
+
+7. Insert Data
+
+Make sure that pre and post folders exists, otherwise create them.
+
+```shell
+cd ~
+mkdir pre post
+```
+
+Place your dicoms files to /home/loris/pre
+
+It is recommended to make use of https://github.com/aueb-wim/DataQualityControlTool/ to find invalid .dcm files that you should not include while uploading a dicom, otherwise the upload will fail.
+
+Execute
+
+```shell
+python dicom_uploader.py
+```
+
+dicom_uploader.py will process each dicom-folder within the folder <b>pre</b> and afterwards moves that dicom-folder to the <b>post</b> folder.
