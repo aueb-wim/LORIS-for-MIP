@@ -53,6 +53,12 @@ def UpdateMriUploads( ):
     mydb.commit()
     return mycursor.rowcount > 0
 
+def DeletePass( ):
+    mycursor.execute("DELETE FROM files_qcstatus" )
+    mydb.commit()
+    return mycursor.rowcount > 0
+
+
 def DeleteACQDates( ):
     mycursor.execute("DELETE FROM mri_acquisition_dates" )
     mydb.commit()
@@ -76,6 +82,9 @@ def DeleteCandidates( ):
 if UpdateMriUploads():
     print( "There were uploads that were stopped during their insertion in the pipeline" )
 
+#deletes pass from qcstatus, otherwise the delete_imaging_upload.pl can't delete the corresponding upload
+DeletePass()
+
 gmu = GetMriUploads()
 #print( gmu )
 
@@ -85,7 +94,7 @@ if os.path.exists( 'imaging_upload_backup.tar.gz' ):
     #print( output )
 
 for i in gmu:
-    print('okj')
+    print('[OK]')
     #e.x ./delete_imaging_upload.pl -uploadID 108 -ignore
     p = subprocess.Popen( [ "delete_imaging_upload.pl", "-uploadID", str(i), "-ignore" ], stdout=subprocess.PIPE)
     output = p.communicate()#.split() ) )
