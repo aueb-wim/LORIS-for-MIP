@@ -1,56 +1,61 @@
-FROM php:7.2-apache
+# FROM php:7.2-apache
 
-RUN apt-get update
-RUN    apt-get install -y git
-RUN docker-php-ext-install pdo pdo_mysql mysqli
-RUN a2enmod rewrite
+# RUN apt-get update
+# RUN    apt-get install -y git
+# RUN docker-php-ext-install pdo pdo_mysql mysqli
+# RUN a2enmod rewrite
 #Install Composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=. --filename=composer
-RUN mv composer /usr/local/bin/
-COPY loris/ /var/www/html/
-EXPOSE 80
+# RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+# RUN php composer-setup.php --install-dir=. --filename=composer
+# RUN mv composer /usr/local/bin/
+# COPY loris/ /var/www/html/
+# EXPOSE 80
 
 FROM ubuntu:16.04
 
 # Install dependencies.
 # g++ (v. 5.4) does not work: https://github.com/tensorflow/tensorflow/issues/13308
-RUN apt-get update && apt-get install -y \
-    #&& apt-get install -y mysql-server mysql-client \
-    && apt-get install -y zip curl wget python-software-properties software-properties-common \
-    && add-apt-repository ppa:ondrej/php \
-    && apt-get update \
-    && apt-get install -y apache2 \
-    && apt-get install -y php7.2 php7.2-mysql php7.2-xml php7.2-json php7.2-mbstring php7.2-gd php-ast \
-    && apt-get install -y composer \
-    && apt-get install -y libapache2-mod-php7.2 \
-    && a2enmod php7.2 \
-    && service apache2 restart
+RUN apt-get update -y
+#RUN apt-get install -y 
+#RUN apt-get install -y mysql-server mysql-client
+RUN apt-get install -y zip curl wget python-software-properties software-properties-common
+RUN apt-get install -y language-pack-en-base
+ENV LC_ALL C.UTF-8
+RUN add-apt-repository -y ppa:ondrej/php 
+RUN apt-get update -y
+RUN apt-get install -y apache2
+RUN apt-get install -y php7.2 php7.2-mysql php7.2-xml php7.2-json php7.2-mbstring php7.2-gd php-ast
+RUN apt-get install -y composer
+RUN apt-get install -y libapache2-mod-php7.2
+RUN a2enmod php7.2
+RUN service apache2 restart
 
 # Creating a User for LORIS
-RUN useradd -U -m -G sudo -s /bin/bash lorisadmin \
-    passwd lorisadmin \
-    su - lorisadmin \
+RUN useradd -U -m -G sudo -s /bin/bash lorisadmin
+RUN echo lorisadmin:12345678 | chpasswd
+RUN su - lorisadmin 
 
 #donwload composer
-RUN curl -sS https://getcomposer.org/installer -o composer-setup.php \
-&& php -r "if (hash_file('SHA384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-&& php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'baf1608c33254d00611ac1705c1d9958c817a1a33bce370c0595974b342601bd80b92a3f46067da89e3b06bff421f182') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 # Select php7.2 as default
 RUN update-alternatives --set php /usr/bin/php7.2
 
 # Nodejs installation
-RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - \
-    apt-get install -y nodejs
+RUN curl -sL https://deb.nodesource.com/setup_8.x > install_node.sh
+RUN bash install_node.sh
+RUN apt-get install -y nodejs
 
 #Install imaging pipeline
-RUN apt-get install python3 \
-    && apt-get install python3-dev \
-    && apt-get install python3-pip \
-    && apt-get install libmysqlclient-dev \
+RUN apt-get install -y python3 \
+    && apt-get install -y python3-dev \
+    && apt-get install -y python3-pip \
+    && apt-get install -y libmysqlclient-dev \
     && pip3 install virtualenv \
-    && apt-get install libc6 libstdc++6 imagemagick perl
+    && apt-get install -y libc6 libstdc++6 imagemagick perl
 
 # Clone.
 #RUN git clone https://github.com/deepmind/scalable_agent.git

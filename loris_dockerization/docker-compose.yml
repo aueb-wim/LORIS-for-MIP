@@ -6,8 +6,9 @@ services:
     networks:
       - frontend
       - backend
+    restart: always
     ports:
-      - "8080:80"
+      - "8088:80"
     volumes:
       - ./loris/:/var/www/
   mysql:
