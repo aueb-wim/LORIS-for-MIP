@@ -1,25 +1,22 @@
 version: "3.2"
 services:
-  apache:
+  apache-php:
     build:
-        context: ./
-    networks:
-      - frontend
-      - backend
+        context: ./loris_docker
     restart: always
     ports:
       - "8088:80"
     volumes:
       - ./loris/:/var/www/
+    links:
+      - mysql
+
   mysql:
-    image: mysql:5.7.28
+    build:
+        context: ./mysql_docker
     restart: always
     ports:
         - "8082:3306"
-    networks:
-      - backend
     environment:
       - MYSQL_ROOT_PASSWORD=neopass
-networks:
-  frontend:
-  backend:
+
