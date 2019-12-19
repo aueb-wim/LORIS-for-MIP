@@ -1,0 +1,87 @@
+LORIS Installation Script starting at 2019-10-14T16:39:09
+The log for this session will be stored in file /var/www/loris/tools/logs/install-2019-10-14T16:39:09.log
+---------------------------------------------------------------------
+                   LORIS Installation Script
+---------------------------------------------------------------------
+
+PHP appears to be installed.
+
+PHP Composer appears to be installed.
+
+This install script will ask you to provide inputs for different steps.
+Please ensure you have the following information ready (if applicable):
+
+  1) Your project directory name.
+     (Will be used to modify the paths for Imaging data in the generated
+     config.xml file for LORIS, and may also be used to automatically
+     create/install apache config files.) If unsure, a default like "LORIS"
+     should be acceptable.
+
+Please also consult the Loris WIKI on GitHub for more information on these
+Install Script input parameters.
+
+Ready to continue? [yn] y
+
+Enter project name: loris
+
+Cannot create cache directory /home/lorisadmin/.composer/cache/repo/https---packagist.org/, or directory is not writable. Proceeding without cache
+Cannot create cache directory /home/lorisadmin/.composer/cache/files/, or directory is not writable. Proceeding without cache
+> mkdir -p project/libraries
+Loading composer repositories with package information
+Installing dependencies from lock file
+  - Installing firebase/php-jwt (v3.0.0)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 10%    Downloading: 20%    Downloading: 30%    Downloading: 40%    Downloading: 50%    Downloading: 60%    Downloading: 100%    Downloading: 100%
+
+  - Installing google/recaptcha (1.2.1)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 5%    Downloading: 10%    Downloading: 15%    Downloading: 20%    Downloading: 85%    Downloading: 90%    Downloading: 95%    Downloading: 100%    Downloading: 100%
+
+  - Installing guzzlehttp/promises (v1.3.1)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 30%    Downloading: 60%    Downloading: 80%    Downloading: 100%    Downloading: 100%
+
+  - Installing ralouphie/getallheaders (2.0.5)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 55%    Downloading: 100%    Downloading: 100%
+
+  - Installing psr/http-message (1.0.1)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 95%    Downloading: 100%    Downloading: 100%
+
+  - Installing guzzlehttp/psr7 (1.5.2)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 5%    Downloading: 10%    Downloading: 15%    Downloading: 50%    Downloading: 55%    Downloading: 60%    Downloading: 65%    Downloading: 70%    Downloading: 75%    Downloading: 80%    Downloading: 100%
+
+  - Installing psr/http-client (1.0.0)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 100%    Downloading: 100%
+
+  - Installing php-http/promise (v1.0.0)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 80%    Downloading: 100%    Downloading: 100%
+
+  - Installing php-http/httplug (v2.0.0)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 85%    Downloading: 95%    Downloading: 100%    Downloading: 100%
+
+  - Installing guzzlehttp/guzzle (6.3.3)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 5%    Downloading: 15%    Downloading: 25%    Downloading: 30%    Downloading: 35%    Downloading: 45%    Downloading: 50%    Downloading: 55%    Downloading: 65%    Downloading: 70%    Downloading: 80%    Downloading: 85%    Downloading: 90%    Downloading: 100%    Downloading: 100%
+
+  - Installing php-http/guzzle6-adapter (v2.0.1)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 20%    Downloading: 40%    Downloading: 60%    Downloading: 80%    Downloading: 90%    Downloading: 100%
+
+  - Installing psr/http-server-handler (1.0.1)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 100%    Downloading: 100%
+
+  - Installing psr/http-server-middleware (1.0.1)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 100%    Downloading: 100%
+
+  - Installing smarty/smarty (v3.1.33)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 5%    Downloading: 10%    Downloading: 15%    Downloading: 20%    Downloading: 25%    Downloading: 30%    Downloading: 35%    Downloading: 40%    Downloading: 45%    Downloading: 50%    Downloading: 55%    Downloading: 60%    Downloading: 65%    Downloading: 70%    Downloading: 75%    Downloading: 80%    Downloading: 85%    Downloading: 90%    Downloading: 95%    Downloading: 100%    Downloading: 100%
+
+  - Installing zendframework/zend-diactoros (1.8.6)
+    Downloading: Connecting...    Downloading: 0%               Downloading: 5%    Downloading: 10%    Downloading: 40%    Downloading: 45%    Downloading: 50%    Downloading: 55%    Downloading: 60%    Downloading: 75%    Downloading: 80%    Downloading: 85%    Downloading: 90%    Downloading: 95%    Downloading: 100%    Downloading: 100%
+
+Generating autoload files
+Ubuntu distribution detected.
+Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 or later default Apache installations) [yn] 
+Please enter 'y' or 'n'.
+Would you like to automatically create/install apache config files? (Works for Ubuntu 14.04 or later default Apache installations) [yn] y
+ln: failed to create symbolic link '/etc/apache2/sites-enabled/loris.conf': File exists
+Site 000-default already disabled
+Site loris already enabled
+Module rewrite already enabled
+Module headers already enabled
+Installation complete.
