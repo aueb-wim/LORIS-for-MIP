@@ -54,7 +54,7 @@ RUN chmod 775 /var/www/loris/project/
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 #&& \ a2enconf fqdn
 
-RUN service apache2 restart
+#RUN service apache2 restart
 
 #donwload composer
 COPY ./other_files/composer-setup.php ./
@@ -70,6 +70,9 @@ RUN update-alternatives --set php /usr/bin/php7.2
 RUN curl -sL https://deb.nodesource.com/setup_8.x > install_node.sh
 RUN bash install_node.sh
 RUN apt-get install -y nodejs
+
+#WORKDIR /var/www/loris
+#RUN make
 
 COPY other_files/config.xml /var/www/loris/project/config.xml
 
