@@ -16,12 +16,12 @@ FROM ubuntu:16.04
 # Install dependencies.
 # g++ (v. 5.4) does not work: https://github.com/tensorflow/tensorflow/issues/13308
 RUN apt-get update -y
-#RUN apt-get install -y 
+#RUN apt-get install -y
 #RUN apt-get install -y mysql-server mysql-client
 RUN apt-get install -y zip curl wget python-software-properties software-properties-common
 RUN apt-get install -y language-pack-en-base
 ENV LC_ALL C.UTF-8
-RUN add-apt-repository -y ppa:ondrej/php 
+RUN add-apt-repository -y ppa:ondrej/php
 RUN apt-get update -y
 RUN apt-get install -y apache2
 RUN apt-get install -y php7.2 php7.2-mysql php7.2-xml php7.2-json php7.2-mbstring php7.2-gd php-ast
@@ -33,7 +33,7 @@ RUN service apache2 restart
 # Creating a User for LORIS
 RUN useradd -U -m -G sudo -s /bin/bash lorisadmin
 RUN echo lorisadmin:12345678 | chpasswd
-RUN su - lorisadmin 
+RUN su - lorisadmin
 
 
 COPY ./loris /var/www/loris
@@ -45,13 +45,16 @@ RUN chown -R lorisadmin.lorisadmin /var/www/loris
 WORKDIR /var/www/loris/tools
 RUN bash install_aueb.sh
 
-RUN a2enmod rewrite 
-RUN a2ensite loris 
+RUN a2enmod rewrite
+RUN a2ensite loris
 RUN chmod 775 /var/www/loris/project/
 
 #RUN service apache2 reload
 
-#RUN service apache2 restart
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+#&& \ a2enconf fqdn
+
+RUN service apache2 restart
 
 #donwload composer
 COPY ./other_files/composer-setup.php ./

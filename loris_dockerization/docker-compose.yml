@@ -19,4 +19,3 @@ services:
         - "8082:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=neopass
-
