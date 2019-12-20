@@ -80,4 +80,4 @@ RUN apt-get install -y python3 \
 
 EXPOSE 80
 
-CMD ["service","apache2","start"]
+ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
