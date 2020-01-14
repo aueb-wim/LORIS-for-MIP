@@ -11,33 +11,37 @@
 # COPY loris/ /var/www/html/
 # EXPOSE 80
 
-FROM ubuntu:16.04
+FROM php:7.2-apache
 
 # Install dependencies.
 # g++ (v. 5.4) does not work: https://github.com/tensorflow/tensorflow/issues/13308
-RUN apt-get update -y
-#RUN apt-get install -y
-#RUN apt-get install -y mysql-server mysql-client
-RUN apt-get install -y zip curl wget python-software-properties software-properties-common
-RUN apt-get install -y language-pack-en-base
-ENV LC_ALL C.UTF-8
-RUN add-apt-repository -y ppa:ondrej/php
-RUN apt-get update -y
-RUN apt-get install -y apache2
-RUN apt-get install -y php7.2 php7.2-mysql php7.2-xml php7.2-json php7.2-mbstring php7.2-gd php-ast
-RUN apt-get install -y composer
-RUN apt-get install -y libapache2-mod-php7.2
-RUN a2enmod php7.2
-RUN service apache2 restart
+RUN apt-get update \
+    && apt-get install -y  \
+        apt-utils --no-install-recommends \
+        zip \
+        curl \
+        wget \
+        python-software-properties \
+        software-properties-common \
+        mysql-client \
+        language-pack-en-base 
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
 
 # Creating a User for LORIS
 RUN useradd -U -m -G sudo -s /bin/bash lorisadmin
 RUN echo lorisadmin:12345678 | chpasswd
 RUN su - lorisadmin
 
-
 COPY ./loris /var/www/loris
 RUN chown -R lorisadmin.lorisadmin /var/www/loris
+
+WORKDIR /var/www/loris
+
+RUN composer install
+
 
 #RUN service apache2 restart
 
@@ -57,13 +61,12 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 #RUN service apache2 restart
 
 #donwload composer
-COPY ./other_files/composer-setup.php ./
-# RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
-RUN php -r "if (hash_file('sha384', 'composer-setup.php') === 'baf1608c33254d00611ac1705c1d9958c817a1a33bce370c0595974b342601bd80b92a3f46067da89e3b06bff421f182') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+WORKDIR /var/www/loris
+
+
 
 # Select php7.2 as default
-RUN update-alternatives --set php /usr/bin/php7.2
+#RUN update-alternatives --set php /usr/bin/php7.2
 
 
 # Nodejs installation
@@ -76,13 +79,7 @@ RUN apt-get install -y nodejs
 
 COPY other_files/config.xml /var/www/loris/project/config.xml
 
-#Install imaging pipeline
-RUN apt-get install -y python3 \
-    && apt-get install -y python3-dev \
-    && apt-get install -y python3-pip \
-    && apt-get install -y libmysqlclient-dev \
-    && pip3 install virtualenv \
-    && apt-get install -y libc6 libstdc++6 imagemagick perl
+
 
 EXPOSE 80
 

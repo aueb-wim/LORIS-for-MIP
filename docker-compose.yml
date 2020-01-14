@@ -1,0 +1,35 @@
+version: "3.2"
+services:
+  mysql:
+    image: mysql:5.7.28
+    restart: always
+    ports:
+        - "8082:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=neopass
+    networks:
+      loris_net:
+        ipv4_address: 172.28.1.2
+
+  apache-php:
+    build:
+        context: ./loris_docker
+    restart: always
+    ports:
+      - "8088:80"
+#    volumes:
+#      - ./loris/:/var/www/
+    links:
+       - mysql
+    depends_on:
+       - mysql
+    networks:
+      loris_net:
+        ipv4_address: 172.28.1.1
+
+networks:
+  loris_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

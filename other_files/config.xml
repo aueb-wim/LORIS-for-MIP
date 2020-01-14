@@ -16,8 +16,8 @@
 
     <!-- database settings -->
     <database>
-        <host>localhost</host>
-        <username>lorisuser</username>
+        <host>mysql</host>
+        <username>root</username>
         <password>neopass</password>
         <database>LORIS</database>
         <quatUser>lorisuser</quatUser>

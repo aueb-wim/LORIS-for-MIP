@@ -5,7 +5,8 @@ all: VERSION javascript
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
-	git describe --tags --always > VERSION
+	#git describe --tags --always > VERSION
+	echo 'v21.0.0' > VERSION
 
 phpdev:
 	composer install
