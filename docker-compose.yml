@@ -13,7 +13,8 @@ services:
 
   apache-php:
     build:
-        context: ./loris_docker
+        context: .
+        dockerfile: Dockerfile_php
     restart: always
     ports:
       - "8088:80"
