@@ -37,7 +37,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-os.chdir( '/home/lorisadmin/Desktop/pre' )
+os.chdir( '/home/lorisadmin/pre' )
 
 def decode(x):
     return x.decode('UTF-8')
@@ -140,13 +140,6 @@ minuTR, maxuTR, minuTE, maxuTE, = GetT1Protocol()
 for folder in os.listdir( ):
     #files = subprocess.call(  )
 
-    #delete .bak files
-    p_back = subprocess.Popen( [ "find", "./" + folder, "-name", "*.bak" ], stdout=subprocess.PIPE)
-    files_back = list( map( decode, p_back.communicate()[0].split() ) )
-    for z in files_back:
-        p_rm = subprocess.Popen( [ "rm", z ], stdout=subprocess.PIPE)
-        p_rm.communicate()
-
     p = subprocess.Popen( [ "find", "./" + folder, "-name", "*dcm" ], stdout=subprocess.PIPE)
     files = list( map( decode, p.communicate()[0].split() ) )
     print( files[0] )
@@ -194,8 +187,19 @@ for folder in os.listdir( ):
         #dcmodify-header
 
         tmp_patient.PatientName = patient_name_dicom
-        pydicom.dcmwrite( file, tmp_patient )
+        pydicom.dcmwrite( file, tmp_patient,  write_like_original=False )
         ####subprocess-call
+        
+        #apply-> dcmodify -ma "(0008,9206)=" *.dcm
+        #print(  "dcmodify -ma (0008,9206)='' "+ file )
+        #print( os.getcwd() )
+        p_mod = subprocess.Popen( [ "dcmodify", "-ma", "'(0008,9206)='", file ], stdout=subprocess.PIPE)
+        mod_list = list( map( decode, p_mod.communicate()[0].split() ) )
+        p_mod = subprocess.Popen( [ "dcmodify", "-ma", "'(0008,9207)='", file ], stdout=subprocess.PIPE)
+        mod_list = list( map( decode, p_mod.communicate()[0].split() ) )
+        #print( mod_list )
+        #print( mod_list[0] )
+
 
         #update Max, Min ( which protocol? e.x. t1 )
         check = False
@@ -229,6 +233,13 @@ for folder in os.listdir( ):
         print( "Update mri_protocol for T1", minuTR, maxuTR, minuTE, maxuTE )
         UpdateT1Protocol( minuTR, maxuTR, minuTE, maxuTE )
 
+    #delete .bak files
+    p_back = subprocess.Popen( [ "find", "./" + folder, "-name", "*.bak" ], stdout=subprocess.PIPE)
+    files_back = list( map( decode, p_back.communicate()[0].split() ) )
+    for z in files_back:
+        p_rm = subprocess.Popen( [ "rm", z ], stdout=subprocess.PIPE)
+        p_rm.communicate()
+
     #print( minuTR, maxuTR, minuTE, maxuTE )
     #input()
     #continue
@@ -239,11 +250,11 @@ for folder in os.listdir( ):
     p.communicate()
 
     #/data/incoming/DCC000006_6_V1.tar.gz N DCC000006_6_V1
-    f = open("/home/lorisadmin/Desktop/input.txt", "w")
+    f = open("/home/lorisadmin/input.txt", "w")
     f.write( "/data/incoming/" + tar_name + " N " + patient_name_dicom )
     f.close()
 
-    file_input = open("/home/lorisadmin/Desktop/input.txt", "r")
+    file_input = open("/home/lorisadmin/input.txt", "r")
     p_upload = subprocess.Popen( ["/data/loris/bin/mri/batch_uploads_imageuploader.pl", "-profile", "prod"], stdin=file_input ) # Success!
     p_upload.communicate()
 

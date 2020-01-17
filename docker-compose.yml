@@ -3,6 +3,7 @@ services:
   mysql:
     image: mysql:5.7.28
     restart: always
+    container_name: loris_mysql
     ports:
         - "8082:3306"
     environment:
@@ -15,11 +16,12 @@ services:
     build:
         context: .
         dockerfile: Dockerfile_php
+    container_name: loris_apache
     restart: always
     ports:
       - "8088:80"
-#    volumes:
-#      - ./loris/:/var/www/
+    volumes:
+      - ./dicom_in/:/home/lorisadmin/pre
     links:
        - mysql
     depends_on:

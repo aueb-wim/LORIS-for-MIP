@@ -6,6 +6,17 @@ This is a setup of LORIS' v21.0.1 tailored for the hospitals that have joined th
 
 ## Installation
 
+### Dockerization
+
+* Clone this repo
+* run docker-compose up --build
+* visit localhost:8088/installdb.php 
+  * Mysql root access -> 172.28.1.2, root, neopass
+  * for Mysql loris user -> lorisuser, neopass
+  * loris frontpage user -> lorisuser, 1234
+* docker exec -it loris_apache bash
+* execute imaging_install_aueb.sh in /data/loris/bin/mri
+
 #### System Requirements
 
  * Apache **2.4** or higher
