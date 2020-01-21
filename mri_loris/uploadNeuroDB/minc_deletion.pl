@@ -31,6 +31,8 @@ This program deletes MINC files from LORIS by:
   - Deleting data from C<files_qcstatus> and C<feedback_mri_comments>
     database tables if the C<-delqcdata> option is set. In most cases
     you would want to delete this when the images change
+  - Deleting C<mri_acquisition_dates> entry if it is the last file
+    removed from that session.
 
 Users can use the argument C<select> to view the record that could be removed
 from the database, or C<confirm> to acknowledge that the data in the database
@@ -109,6 +111,8 @@ Deletes MINC files from LORIS by:
   - Deleting data from files_qcstatus & feedback_mri_comments
     database tables if the -delqcdata option is set. In most cases
     you would want to delete this when the images change
+  - Deleting mri_acquisition_dates entry if it is the last file
+    removed from that session.
 
 Users can use the argument "select" to view the record that could be removed
 from the database, or "confirm" to acknowledge that the data in the database
@@ -317,6 +321,9 @@ selORdel("parameter_file","Value");
 # selORdel("MRICandidateErrors","Reason");       # not applicable to /assembly
 # selORdel("mri_violations_log","LogID");        # "
 
+### Removal of entry in mri_acquisition_dates table ###
+### (if only one file exists and is being removed,  ###
+### the table entry needs to be removed)            ###
 print "\nTarchiveID: $tarchiveid\n";
 print "\nSessionID: $sessionid\n";
 
@@ -380,6 +387,23 @@ if ($sth->rows > 0) {
     print "\nfiles found in mri_violations_log\n";
 }
 
+
+# If no related files were found, delete the entry
+if (!$sessionfilesfound) {
+
+  my $query = $selORdel . "FROM mri_acquisition_dates where SessionID=?";
+  my $sth = $dbh->prepare($query);
+  $sth->execute($sessionid);
+
+  if ($selORdel eq "SELECT * ") {
+    while (my $pf = $sth->fetchrow_hashref()) {
+        print "\nAcquisitionDate: " . $pf->{'AcquisitionDate'};
+    }
+  } else {
+    print "\nmri_acquisition_dates has been deleted\n";
+  }
+
+}
 
 # If using SeriesUID, get number of matching files before deleting
 if ($field eq "SeriesUID") {

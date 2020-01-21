@@ -83,20 +83,14 @@ use Cwd qw/ abs_path /;
 # These are the NeuroDB modules to be used
 use lib "$FindBin::Bin";
 
+use NeuroDB::Database;
+
 use NeuroDB::File;
 use NeuroDB::MRI;
 use NeuroDB::DBI;
 use NeuroDB::Notify;
 use NeuroDB::MRIProcessingUtility;
 use NeuroDB::ExitCodes;
-
-use NeuroDB::Database;
-use NeuroDB::DatabaseException;
-
-use NeuroDB::objectBroker::ObjectBrokerException;
-use NeuroDB::objectBroker::ConfigOB;
-
-
 
 # Turn on autoflush for standard output buffer so that we immediately see 
 #the results of print statements.
@@ -236,17 +230,12 @@ if ( !$ARGV[0] ) {
     exit $NeuroDB::ExitCodes::MISSING_ARG;
 }
 
-
-
-# ----------------------------------------------------------------
-## Establish database connection
-# ----------------------------------------------------------------
-
-# old database connection
+################################################################
+######### Establish database connection ########################
+################################################################
 my $dbh = &NeuroDB::DBI::connect_to_db(@Settings::db);
 
-# new Moose database connection
-my $db  = NeuroDB::Database->new(
+my $db = NeuroDB::Database->new(
     databaseName => $Settings::db[0],
     userName     => $Settings::db[1],
     password     => $Settings::db[2],
@@ -254,49 +243,48 @@ my $db  = NeuroDB::Database->new(
 );
 $db->connect();
 
-$message = "\n==> Successfully connected to database \n";
-
-
-# ----------------------------------------------------------------
-## Get config settings using ConfigOB
-# ----------------------------------------------------------------
-
-my $configOB = NeuroDB::objectBroker::ConfigOB->new(db => $db);
-
-my $data_dir       = $configOB->getDataDirPath();
-my $tarchivePath   = $configOB->getTarchiveLibraryDir();
-my $mail_user      = $configOB->getMailUser();
-my $get_dicom_info = $configOB->getDicomInfo();
-my $converter      = $configOB->getConverter();
-
-
-# -----------------------------------------------------------------
-## Get config setting using the old database calls
-# -----------------------------------------------------------------
-
-my $exclude = NeuroDB::DBI::getConfigSetting(\$dbh, 'excluded_series_description');
-
-
+$message ="\n==> Successfully connected to database \n";
 
 my $tarchive = $ARGV[0];
+my $tarchivePath = NeuroDB::DBI::getConfigSetting(
+                        \$dbh,'tarchiveLibraryDir'
+                        );
 unless ($tarchive =~ m/$tarchivePath/i) {
     $tarchive = ($tarchivePath . "/" . $tarchive);
 }
 
 unless (-e $tarchive) {
     print STDERR "\nERROR: Could not find archive $tarchive.\n"
-        . "Please, make sure the path to the archive is correct.\n\n";
+                 . "Please, make sure the path to the archive is correct.\n\n";
     exit $NeuroDB::ExitCodes::INVALID_PATH;
 }
+
 
 ################################################################
 #### These settings are in the database, & are     #############
 #### accessible through the Configuration Module   #############
 ################################################################
+my $data_dir = NeuroDB::DBI::getConfigSetting(
+                 \$dbh,'dataDirBasepath'
+                 );
 my $pic_dir = $data_dir.'/pic';
-
-my $template       = "TarLoad-$hour-$min-XXXXXX"; # for tempdir
-my $User           = getpwuid($>);
+my $prefix = NeuroDB::DBI::getConfigSetting(
+               \$dbh,'prefix'
+               );
+my $converter = NeuroDB::DBI::getConfigSetting(
+                 \$dbh,'converter'
+                 );
+my $mail_user = NeuroDB::DBI::getConfigSetting(
+                 \$dbh,'mail_user'
+                 );
+my $get_dicom_info = NeuroDB::DBI::getConfigSetting(
+                 \$dbh,'get_dicom_info'
+                 );
+my $exclude          = NeuroDB::DBI::getConfigSetting(
+                        \$dbh, 'excluded_series_description'
+                       );
+my $template         = "TarLoad-$hour-$min-XXXXXX"; # for tempdir
+my $User             = getpwuid($>);
 
 # fixme there are better ways 
 my @progs = ("convert", "Mincinfo_wrapper.pl", "mincpik.pl", $converter);
@@ -360,8 +348,12 @@ my $notifier = NeuroDB::Notify->new(\$dbh);
 ################################################################
 ################ Construct the tarchiveInfo Array ##############
 ################################################################
+my $tarchiveLibraryDir = NeuroDB::DBI::getConfigSetting(
+                            \$dbh,'tarchiveLibraryDir'
+                            );
+$tarchiveLibraryDir    =~ s/\/$//g;
 my $ArchiveLocation    = $tarchive;
-$ArchiveLocation       =~ s/$tarchivePath\/?//g;
+$ArchiveLocation       =~ s/$tarchiveLibraryDir\/?//g;
 my %tarchiveInfo = $utility->createTarchiveArray(
                        $ArchiveLocation,
                        $globArchiveLocation
@@ -419,9 +411,25 @@ my $scannerID = $utility->determineScannerID(
 ################################################################
 ###### Construct the $subjectIDsref array ######################
 ################################################################
-my ($subjectIDsref) = $utility->determineSubjectID(
-    $scannerID, \%tarchiveInfo, 0, $upload_id, $User, $centerID
+my $subjectIDsref = $utility->determineSubjectID(
+        $scannerID, \%tarchiveInfo, 0, $upload_id
 );
+
+################################################################
+###### Get the SessionID #######################################
+################################################################
+if (!defined($subjectIDsref->{'visitLabel'})) { 
+    $subjectIDsref->{'visitLabel'} = 
+    $utility->lookupNextVisitLabel(
+        $subjectIDsref->{'CandID'}, 
+        \$dbh
+    ); 
+}
+my ($sessionID) =
+    NeuroDB::MRI::getSessionID(
+         $subjectIDsref, $tarchiveInfo{'DateAcquired'},
+         \$dbh, $subjectIDsref->{'subprojectID'}, $db
+    );
 
 ################################################################
 ###### Extract the tarchive and feed the dicom data ############
@@ -590,11 +598,6 @@ if ($valid_study) {
     ############################################################
     #### link the tarchive and mri_upload table  with session ##
     ############################################################
-    my ($sessionID) = NeuroDB::MRI::getSessionID(
-        $subjectIDsref, $tarchiveInfo{'DateAcquired'},
-        \$dbh, $subjectIDsref->{'subprojectID'}, $db
-    );
-
     $query = "UPDATE tarchive SET SessionID=? WHERE TarchiveID=?";
     $sth   = $dbh->prepare($query);
     print $query . "\n" if $debug;

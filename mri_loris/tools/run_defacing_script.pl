@@ -43,14 +43,6 @@ use File::Temp 'tempdir';
 use NeuroDB::DBI;
 use NeuroDB::ExitCodes;
 
-use NeuroDB::Database;
-use NeuroDB::DatabaseException;
-
-use NeuroDB::objectBroker::ObjectBrokerException;
-use NeuroDB::objectBroker::ConfigOB;
-
-
-
 
 
 # These are hardcoded as examples of how to deal with special modalities:
@@ -158,39 +150,19 @@ if ( !@Settings::db ) {
 
 
 
-# ----------------------------------------------------------------
-## Establish database connection
-# ----------------------------------------------------------------
+## establish database connection
 
-# old database connection
 my $dbh = &NeuroDB::DBI::connect_to_db(@Settings::db);
-
-# new Moose database connection
-my $db  = NeuroDB::Database->new(
-    databaseName => $Settings::db[0],
-    userName     => $Settings::db[1],
-    password     => $Settings::db[2],
-    hostName     => $Settings::db[3]
-);
-$db->connect();
+print "\n==> Successfully connected to the database \n" if $verbose;
 
 
 
-# ----------------------------------------------------------------
-## Get config setting using ConfigOB
-# ----------------------------------------------------------------
+## get config settings
 
-my $configOB = NeuroDB::objectBroker::ConfigOB->new(db => $db);
-
-my $data_dir      = $configOB->getDataDirPath();
-my $ref_scan_type = $configOB->getDefacingRefScanType();
-
-
-# -----------------------------------------------------------------
-## Get config setting using the old database calls
-# -----------------------------------------------------------------
-
-my $to_deface = &NeuroDB::DBI::getConfigSetting(\$dbh, 'modalities_to_deface');
+my $ref_scan_type = &NeuroDB::DBI::getConfigSetting(\$dbh, 'reference_scan_type_for_defacing');
+my $to_deface     = &NeuroDB::DBI::getConfigSetting(\$dbh, 'modalities_to_deface'            );
+my $data_dir      = &NeuroDB::DBI::getConfigSetting(\$dbh, 'dataDirBasepath'                 );
+$data_dir         =~ s/\/$//;  # remove trailing /
 unless ($ref_scan_type && $to_deface) {
     print STDERR "\n==> ERROR: you need to configure both the "
                  . "reference_scan_type_for_defacing & modalities_to_deface config "

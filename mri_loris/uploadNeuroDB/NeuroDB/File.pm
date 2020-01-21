@@ -359,6 +359,8 @@ sub loadFileFromDisk {
 	 }
 	 close MI;
     
+    $this->setParameter('header', $header);
+
     return 1;
 }
 
@@ -535,7 +537,7 @@ sub filterParameters {
     my $parametersRef = $this->getParameters();
 
     foreach my $key (keys %{$parametersRef}) {
-        if(defined length($parametersRef->{$key})
+        if(($key ne 'header') && (defined length($parametersRef->{$key}))
             && (length($parametersRef->{$key}) > MAX_DICOM_PARAMETER_LENGTH)) {
             $this->removeParameter($key);
         }

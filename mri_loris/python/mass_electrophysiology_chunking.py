@@ -69,6 +69,7 @@ def main():
         make_chunks(smallest_id, config_file, verbose)
     else:
         for file_id in range(smallest_id, largest_id):
+            print(file_id)
             make_chunks(file_id, config_file, verbose)
 
 
@@ -159,9 +160,7 @@ def make_chunks(physiological_file_id, config_file, verbose):
     physiological = Physiological(db, verbose)
 
     # create the chunked dataset
-    if physiological.grep_file_path_from_file_id(physiological_file_id):
-        print('Chunking physiological file ID ' + physiological_file_id)
-        physiological.create_chunks_for_visualization(physiological_file_id, data_dir)
+    physiological.create_chunks_for_visualization(physiological_file_id, data_dir)
 
 
 if __name__ == "__main__":

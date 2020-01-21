@@ -54,13 +54,6 @@ use NeuroDB::DBI;
 use NeuroDB::Notify;
 use NeuroDB::ExitCodes;
 
-use NeuroDB::Database;
-use NeuroDB::DatabaseException;
-
-use NeuroDB::objectBroker::ObjectBrokerException;
-use NeuroDB::objectBroker::ConfigOB;
-
-
 
 my $profile   = '';
 my $upload_id = undef; 
@@ -127,36 +120,22 @@ if ( !@Settings::db ) {
 }
 
 
-# ----------------------------------------------------------------
-## Establish database connection
-# ----------------------------------------------------------------
-
-# old database connection
+################################################################
+################ Establish database connection #################
+################################################################
 my $dbh = &NeuroDB::DBI::connect_to_db(@Settings::db);
-
-# new Moose database connection
-my $db  = NeuroDB::Database->new(
-    databaseName => $Settings::db[0],
-    userName     => $Settings::db[1],
-    password     => $Settings::db[2],
-    hostName     => $Settings::db[3]
-);
-$db->connect();
-
-
-# ----------------------------------------------------------------
-## Get config setting using ConfigOB
-# ----------------------------------------------------------------
-
-my $configOB = NeuroDB::objectBroker::ConfigOB->new(db => $db);
-
-my $data_dir  = $configOB->getDataDirPath();
-my $mail_user = $configOB->getMailUser();
-my $bin_dir   = $configOB->getMriCodePath();
-my $is_qsub   = $configOB->getIsQsub();
-
-
-
+my $data_dir = &NeuroDB::DBI::getConfigSetting(
+                    \$dbh,'dataDirBasepath'
+                    );
+my $bin_dir = &NeuroDB::DBI::getConfigSetting(
+                    \$dbh,'MRICodePath'
+                    );
+my $is_qsub = &NeuroDB::DBI::getConfigSetting(
+                    \$dbh,'is_qsub'
+                    );
+my $mail_user = &NeuroDB::DBI::getConfigSetting(
+                    \$dbh,'mail_user'
+                    );
 
 my ($stdoutbase, $stderrbase) = ("$data_dir/batch_output/imuploadstdout.log", 
 				 "$data_dir/batch_output/imuploadstderr.log");

@@ -72,19 +72,10 @@ use warnings;
 use Getopt::Tabular;
 use File::Path qw/ make_path /;
 use File::Basename;
-use JSON;
-
 use NeuroDB::DBI;
 use NeuroDB::MRI;
 use NeuroDB::ExitCodes;
-
-use NeuroDB::Database;
-use NeuroDB::DatabaseException;
-
-use NeuroDB::objectBroker::ObjectBrokerException;
-use NeuroDB::objectBroker::ConfigOB;
-
-
+use JSON;
 
 my $profile             = undef;
 my $tarchiveID          = undef;
@@ -182,37 +173,17 @@ if ( !$datasetName ) {
 }
 
 
-
-
-# ----------------------------------------------------------------
-## Establish database connection
-# ----------------------------------------------------------------
-
-# old database connection
+# Establish database connection
 my $dbh = &NeuroDB::DBI::connect_to_db(@Settings::db);
-
-# new Moose database connection
-my $db  = NeuroDB::Database->new(
-    databaseName => $Settings::db[0],
-    userName     => $Settings::db[1],
-    password     => $Settings::db[2],
-    hostName     => $Settings::db[3]
-);
-$db->connect();
-
 print "\n==> Successfully connected to database \n";
 
+# This setting is in the ConfigSettings table
+my $dataDir = &NeuroDB::DBI::getConfigSetting(\$dbh,'dataDirBasepath');
+my $binDir  = &NeuroDB::DBI::getConfigSetting(\$dbh,'MRICodePath');
+my $prefix  = &NeuroDB::DBI::getConfigSetting(\$dbh,'prefix');
 
-# ----------------------------------------------------------------
-## Get config setting using ConfigOB
-# ----------------------------------------------------------------
-
-my $configOB = NeuroDB::objectBroker::ConfigOB->new(db => $db);
-
-my $dataDir  = $configOB->getDataDirPath();
-my $binDir   = $configOB->getMriCodePath();
-my $prefix   = $configOB->getPrefix();
-
+$dataDir =~ s/\/$//g;
+$binDir  =~ s/\/$//g;
 
 # Make destination directory for the NIfTI files
 # same level as assembly/ directory but named as BIDS_export/
