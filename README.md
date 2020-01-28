@@ -10,12 +10,21 @@ This is a setup of LORIS' v21.0.1 tailored for the hospitals that have joined th
 
 * Clone this repo
 * run docker-compose up --build
-* visit localhost:8088/installdb.php 
-  * Mysql root access -> 172.28.1.2, root, neopass
-  * for Mysql loris user -> lorisuser, neopass
-  * loris frontpage user -> lorisuser, 1234
+#* visit localhost:8088/installdb.php
+#  * Mysql root access -> 172.28.1.2, root, neopass
+#  * for Mysql loris user -> lorisuser, neopass
+#  * loris frontpage user -> lorisuser, 1234
 * docker exec -it loris_apache bash
+curl_query.sh creates the db schema, mysqluser and frontend user of loris
+    * Mysql root access -> 172.28.1.2, root, neopass
+    * for Mysql loris user -> lorisuser, neopass
+    * loris frontpage user -> lorisuser, 1234
+* bash /home/lorisadmin/curl_query.sh
+(note that when you execute imaging_install_aueb.sh, your working directory must be /data/loris/bin/mri, also you must source beforehand minc-toolkit-config.sh )
+* source /opt/minc/1.9.17/minc-toolkit-config.sh
+* cd /data/loris/bin/mri
 * execute imaging_install_aueb.sh in /data/loris/bin/mri
+* bash imaging_install_aueb.sh
 
 #### System Requirements
 

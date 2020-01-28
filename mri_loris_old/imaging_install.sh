@@ -54,9 +54,7 @@ if [ -z "$prodfilename" ]; then
     prodfilename="prod"
 fi 
  
-read -p "Enter the list of Site names (space separated) " site
 mridir=`pwd`
-#read -p "Enter Full Loris-code directory path "   lorisdir
 
 
 #################################################################################################
@@ -64,23 +62,23 @@ mridir=`pwd`
 #################################################################################################
 echo "Installing the perl libraries...This will take a few minutes..."
 #echo $rootpass | sudo perl -MCPAN -e shell
-cpan install Math::Round
+sudo -S cpan install Math::Round
 #echo $rootpass | sudo -S cpan install Bundle::CPAN
-cpan install DBI
-cpan install DBD::mysql
-cpan install Getopt::Tabular
-cpan install Time::JulianDay
-cpan install Path::Class
-cpan install Archive::Extract
-cpan install Archive::Zip
-cpan install Pod::Perldoc
-cpan install Pod::Markdown
-cpan install Pod::Usage
-cpan install JSON
-cpan install Moose
-cpan install MooseX::Privacy
-cpan install TryCatch
-cpan install Throwable
+sudo -S cpan install DBI
+sudo -S cpan install DBD::mysql
+sudo -S cpan install Getopt::Tabular
+sudo -S cpan install Time::JulianDay
+sudo -S cpan install Path::Class
+sudo -S cpan install Archive::Extract
+sudo -S cpan install Archive::Zip
+sudo -S cpan install Pod::Perldoc
+sudo -S cpan install Pod::Markdown
+sudo -S cpan install Pod::Usage
+sudo -S cpan install JSON
+sudo -S cpan install Moose
+sudo -S cpan install MooseX::Privacy
+sudo -S cpan install TryCatch
+sudo -S cpan install Throwable
 echo
 
 ################################################################################
@@ -88,7 +86,7 @@ echo
 ################################################################################
 echo "Creating loris-mri Python virtualenv in $mridir/python_virtualenvs/loris-mri-python/"
 # create a directory in $mridir that will store python 3 virtualenv
-su $USER -c "mkdir -m 770 -p $mridir/python_virtualenvs/loris-mri-python"
+sudo -S su $USER -c "mkdir -m 770 -p $mridir/python_virtualenvs/loris-mri-python"
 virtualenv $mridir/python_virtualenvs/loris-mri-python -p `which python3`
 source $mridir/python_virtualenvs/loris-mri-python/bin/activate
 echo "Installing the Python libraries into the loris-mri virtualenv..."
@@ -99,6 +97,10 @@ pip3 install pyblake2
 pip3 install mne
 pip3 install google
 pip3 install protobuf
+pip3 install matplotlib
+pip3 install nose
+pip3 install sklearn
+pip3 install nilearn
 # deactivate the virtualenv for now
 deactivate
 
@@ -106,21 +108,21 @@ deactivate
 #############################Create directories########################################
 #######################################################################################
 echo "Creating the data directories"
-  su $USER -c "mkdir -m 2770 -p /data/$PROJ/data/"
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/trashbin"         #holds mincs that didn't match protocol
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/tarchive"         #holds tared dicom-folder
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/pic"              #holds jpegs generated for the MRI-browser
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/logs"             #holds logs from pipeline script
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/assembly"         #holds the MINC files
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/batch_output"     #contains the result of the SGE (queue)
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/bids_imports"     #contains imported BIDS studies
-  su $USER -c "mkdir -m 770 -p $mridir/dicom-archive/.loris_mri"
+  sudo -S su $USER -c "mkdir -m 2770 -p /data/$PROJ/data/"
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/trashbin"         #holds mincs that didn't match protocol
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/tarchive"         #holds tared dicom-folder
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/pic"              #holds jpegs generated for the MRI-browser
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/logs"             #holds logs from pipeline script
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/assembly"         #holds the MINC files
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/batch_output"     #contains the result of the SGE (queue)
+  sudo -S su $USER -c "mkdir -m 770 -p /data/$PROJ/data/bids_imports"     #contains imported BIDS studies
+  sudo -S su $USER -c "mkdir -m 770 -p $mridir/dicom-archive/.loris_mri"
 echo
 
 #####################################################################################
 ###############incoming directory ###################################################
 #####################################################################################
-su $USER -c "mkdir -m 2770 -p /data/incoming/"
+sudo -S su $USER -c "mkdir -m 2770 -p /data/incoming/"
 
 ###################################################################################
 #######set environment variables under .bashrc#####################################
@@ -154,22 +156,22 @@ fi
 ####################################################################################
 #echo "Changing permissions"
 
-chmod -R 770 $mridir/dicom-archive/.loris_mri/
-chmod -R 770 /data/$PROJ/
-chmod -R 770 /data/incoming/
+sudo chmod -R 770 $mridir/dicom-archive/.loris_mri/
+sudo chmod -R 770 /data/$PROJ/
+sudo chmod -R 770 /data/incoming/
 
 # Making lorisadmin part of the apache group
-usermod -a -G $group $USER
+sudo usermod -a -G $group $USER
 
 #Setting group permissions for all files/dirs under /data/$PROJ/ and /data/incoming/
-chgrp $group -R /data/$PROJ/
-chgrp $group -R /data/incoming/
+sudo chgrp $group -R /data/$PROJ/
+sudo chgrp $group -R /data/incoming/
 
 #Setting group ID for all files/dirs under /data/$PROJ/data
-chmod -R g+s /data/$PROJ/data/
+sudo chmod -R g+s /data/$PROJ/data/
 
 #Setting group ID for all files/dirs under /data/incoming
-chmod -R g+s /data/incoming/
+sudo chmod -R g+s /data/incoming/
 echo
 
 #####################################################################################
@@ -178,8 +180,8 @@ echo
 echo "Creating MRI config file"
 
 cp $mridir/dicom-archive/profileTemplate.pl $mridir/dicom-archive/.loris_mri/$prodfilename
-chmod 640 $mridir/dicom-archive/.loris_mri/$prodfilename
-chgrp $group $mridir/dicom-archive/.loris_mri/$prodfilename
+sudo chmod 640 $mridir/dicom-archive/.loris_mri/$prodfilename
+sudo chgrp $group $mridir/dicom-archive/.loris_mri/$prodfilename
 
 sed -e "s#DBNAME#$mysqldb#g" -e "s#DBUSER#$mysqluser#g" -e "s#DBPASS#$mysqlpass#g" -e "s#DBHOST#$mysqlhost#g" $mridir/dicom-archive/profileTemplate.pl > $mridir/dicom-archive/.loris_mri/$prodfilename
 echo "config file is located at $mridir/dicom-archive/.loris_mri/$prodfilename"
@@ -187,8 +189,8 @@ echo
 
 echo "Creating python database config file with database credentials"
 cp $mridir/dicom-archive/database_config_template.py $mridir/dicom-archive/.loris_mri/database_config.py
-chmod 640 $mridir/dicom-archive/.loris_mri/database_config.py
-chgrp $group $mridir/dicom-archive/.loris_mri/database_config.py
+sudo chmod 640 $mridir/dicom-archive/.loris_mri/database_config.py
+sudo chgrp $group $mridir/dicom-archive/.loris_mri/database_config.py
 sed -e "s#DBNAME#$mysqldb#g" -e "s#DBUSER#$mysqluser#g" -e "s#DBPASS#$mysqlpass#g" -e "s#DBHOST#$mysqlhost#g" $mridir/dicom-archive/database_config_template.py > $mridir/dicom-archive/.loris_mri/database_config.py
 echo "config file for python import scripts is located at $mridir/dicom-archive/.loris_mri/database_config.py"
 echo
@@ -214,7 +216,7 @@ else
     fi
 
     echo "Installing DICOM Toolkit (May prompt for sudo password)"
-    apt-get install dcmtk
+    sudo -S apt-get install dcmtk
 fi
 ######################################################################
 ###### Update the Database table, Config, with the user values #######
