@@ -1,3 +1,4 @@
+DELIMITER $$
 CREATE DEFINER = CURRENT_USER TRIGGER `LORIS`.`files_AFTER_INSERT` AFTER INSERT ON `files` FOR EACH ROW
 BEGIN
 	INSERT INTO files_qcstatus
@@ -7,4 +8,4 @@ BEGIN
      QCStatus = "Pass",
      QCFirstChangeTime = unix_timestamp( NOW() ),
      QCLastChangeTime = unix_timestamp( NOW() );
-END
+END $$

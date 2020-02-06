@@ -126,6 +126,7 @@ COPY ./aueb_files/curl_query.sh /home/lorisadmin/curl_query.sh
 
 RUN mkdir /data/incoming
 RUN mkdir /data/tmp
+RUN mkdir /home/lorisadmin/csvs
 
 RUN mkdir -m 2770 -p /data/loris/data/ \
  && mkdir -m 770 -p /data/loris/data/trashbin \
