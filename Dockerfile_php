@@ -148,6 +148,9 @@ RUN cp -r /data/loris/bin/mri/uploadNeuroDB /data/loris/data/uploadNeuroDB
 RUN echo "source /data/loris/bin/mri/environment" >> /root/.bashrc
 RUN echo "source /data/loris/bin/mri/environment" >> /home/lorisadmin/.bashrc
 
+RUN apt-get install -y minc-tools
+RUN apt-get install -y file
+
 EXPOSE 80
 
 ENTRYPOINT ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

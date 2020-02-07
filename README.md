@@ -38,7 +38,8 @@ Exit the container and relogin.
 
 Now when you login into loris_apache container you must see that your environment has been update to (loris-mri-python).
 
-For the execution of the python scripts located in /data/bin/python
+For the execution of the python scripts located in /data/loris/bin/mri/python
+
 ```shell
 pip install requests==2.22.0 pandas==0.24.2 xmltodict==0.12.0 pydicom==1.3.0 mysql-connector==2.2.9
 ```
@@ -240,6 +241,7 @@ In order to mark all newly inserted mincs as "Pass"
 Images in our case are ought to be initialized with a 'PASS' label upon being imported to LORIS. This is done by triger "files_AFTER_INSERT"
 
 ```shell
+DELIMITER $$
 CREATE DEFINER = CURRENT_USER TRIGGER `LORIS`.`files_AFTER_INSERT` AFTER INSERT ON `files` FOR EACH ROW
 BEGIN
 	INSERT INTO files_qcstatus
@@ -249,7 +251,7 @@ BEGIN
      QCStatus = "Pass",
      QCFirstChangeTime = unix_timestamp( NOW() ),
      QCLastChangeTime = unix_timestamp( NOW() );
-END
+END $$ql
 ```
 
 Loris does not store the StudyID of the mincs files into the database. One workaround is to modify the "files" table
@@ -283,6 +285,13 @@ mkdir pre post
 Place your dicoms files to /home/loris/pre
 
 It is recommended to make use of https://github.com/aueb-wim/DataQualityControlTool/ to find invalid .dcm files that you should not include while uploading a dicom, otherwise the upload will fail.
+
+Example:
+Upload a dicom folder to loris_apache container from host to /home/lorisadmin/pre
+```shell
+docker cp folder_path_from_host loris_apache:/home/lorisadmin/pre
+```
+
 
 Execute
 
