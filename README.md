@@ -10,7 +10,7 @@ This is a setup of LORIS' v21.0.1 tailored for the hospitals that have joined th
 
 * Clone this repo
 * run docker-compose up --build
-#* visit localhost:8088/installdb.php
+
 #  * Mysql root access -> 172.28.1.2, root, neopass
 #  * for Mysql loris user -> lorisuser, neopass
 #  * loris frontpage user -> lorisuser, 1234
@@ -20,11 +20,33 @@ curl_query.sh creates the db schema, mysqluser and frontend user of loris
     * for Mysql loris user -> lorisuser, neopass
     * loris frontpage user -> lorisuser, 1234
 * bash /home/lorisadmin/curl_query.sh
-(note that when you execute imaging_install_aueb.sh, your working directory must be /data/loris/bin/mri, also you must source beforehand minc-toolkit-config.sh )
-* source /opt/minc/1.9.17/minc-toolkit-config.sh
+If you attempt to login now the design will not load display correctly, to fix that you need to execute the update_interface.sql to the mysql-container.
+
+At the mysql-container execute
+```shell
+UPDATE `LORIS`.`psc` SET `MRI_alias`='DCC' WHERE `CenterID`='1';
+INSERT INTO Visit_Windows (Visit_label,  WindowMinDays, WindowMaxDays, OptimumMinDays, OptimumMaxDays, WindowMidpointDays) VALUES ('V1', '0', '2147483647', '40', '60', '50');
+```
+
+(Note that when you execute imaging_install_aueb.sh, your working directory must be /data/loris/bin/mri, also you must source beforehand minc-toolkit-config.sh )
+* source /opt/minc/1.9.17/minc-toolkit-config.csh
 * cd /data/loris/bin/mri
 * execute imaging_install_aueb.sh in /data/loris/bin/mri
 * bash imaging_install_aueb.sh
+
+Exit the container and relogin.
+
+Now when you login into loris_apache container you must see that your environment has been update to (loris-mri-python).
+
+For the execution of the python scripts located in /data/bin/python
+```shell
+pip install requests==2.22.0 pandas==0.24.2 xmltodict==0.12.0 pydicom==1.3.0 mysql-connector==2.2.9
+```
+
+Change whatever is 'LORIS' to 'loris' as marked in the red lines.
+![](docs/pics/fix_paths_configuration_admin_panel_red_line.png)
+
+To finish the docker setup check Quality Control section.
 
 #### System Requirements
 

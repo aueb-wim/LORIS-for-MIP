@@ -65,10 +65,10 @@ def organize_nifti(input_file, output_folder):
         patientid = getval(patientid)
 
         metadata = dict()
-        metadata['SeriesDescription'] = seriesdesc#DEFAULT_PROTOCOL
-        metadata['SeriesNumber'] = seriesnumber#DEFAULT_REPETITION
-        metadata['PatientID'] = patientid#nii_file_basename.split('_')[0]
-        metadata['StudyID'] = studyid#nii_file_basename.split('_')[1][:-4]
+        metadata['SeriesDescription'] = DEFAULT_PROTOCOL#str(seriesdesc)#DEFAULT_PROTOCOL
+        metadata['SeriesNumber'] = DEFAULT_REPETITION#str(seriesnumber)#DEFAULT_REPETITION
+        metadata['PatientID'] = str(patientid)#nii_file_basename.split('_')[0]
+        metadata['StudyID'] = str(studyid)#nii_file_basename.split('_')[1][:-4]
 
         print( metadata )
 
