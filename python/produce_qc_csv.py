@@ -67,7 +67,7 @@ def UpdateFiles( ):
         dateTimeObj = datetime.now()
         csv_filename = str(dateTimeObj).replace( " ", "_" ) + ".csv"
         #ex. '2019-10-11_20:58:33.304849.csv
-        prefix = "/home/lorisadmin/csvs/"
+        prefix = "/data/loris/csvs/"
         df.to_csv( prefix + csv_filename, index=False)
 
         #update table
