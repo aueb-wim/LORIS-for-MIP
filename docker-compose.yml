@@ -21,7 +21,9 @@ services:
     ports:
       - "8088:80"
     volumes:
-      - ./dicom_in/:/home/lorisadmin/pre
+      - ./dicom_in/:/home/lorisadmin/dicom_in
+      - ./dicom_post/:/home/lorisadmin/post
+      - ./nifti_out/:/data/loris/nifti_out
     links:
        - mysql
     depends_on:

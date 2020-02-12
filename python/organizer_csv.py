@@ -16,16 +16,31 @@ def decode(x):
 def getval(x):
     return decode( x ).split( "=" )[1].split( '"' )[1]
 
+def FindNextSubFolder( path ):
+    os.chdir( path )
+    L  = os.listdir()
+    def f(x):
+        return int( x.split("_")[1] )
+    def lastEl( x ):
+        if len(x) == 0:
+            return 0
+        return x[-1]
+    L = sorted( list( map( f, L ) ) )
+    return "batch_" + str( lastEl(L)+1 )
+
 def main():
     logging.basicConfig(level=logging.INFO)
 
     args_parser = argparse.ArgumentParser()
     args_parser.add_argument("input_file")
-    args_parser.add_argument("output_folder")
+    #args_parser.add_argument("output_folder")
     args = args_parser.parse_args()
 
-    if not os.path.exists(args.output_folder):
-        os.makedirs(args.output_folder)
+    #/data/loris/nifti_out
+    output_folder = FindNextSubFolder( '/data/loris/nifti_out')
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
     organize_nifti(args.input_file, args.output_folder)
 

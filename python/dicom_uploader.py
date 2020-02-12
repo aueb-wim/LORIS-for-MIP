@@ -37,7 +37,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-os.chdir( '/home/lorisadmin/pre' )
+os.chdir( '/data/loris/dicom_in' )
 
 def decode(x):
     return x.decode('UTF-8')
@@ -189,7 +189,7 @@ for folder in os.listdir( ):
         tmp_patient.PatientName = patient_name_dicom
         pydicom.dcmwrite( file, tmp_patient,  write_like_original=False )
         ####subprocess-call
-        
+
         #apply-> dcmodify -ma "(0008,9206)=" *.dcm
         #print(  "dcmodify -ma (0008,9206)='' "+ file )
         #print( os.getcwd() )
