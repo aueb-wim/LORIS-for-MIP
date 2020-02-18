@@ -7,7 +7,7 @@ import requests
 import json
 import pandas as pd
 
-fin = open("/home/lorisadmin/cred.txt", "r" )
+fin = open("/data/loris/aueb/cred.txt", "r" )
 interface_username, interface_password = fin.read().split()
 
 # data to be sent to api - login

@@ -19,7 +19,7 @@ curl_query.sh creates the db schema, mysqluser and frontend user of loris
     * Mysql root access -> 172.28.1.2, root, neopass
     * for Mysql loris user -> lorisuser, neopass
     * loris frontpage user -> lorisuser, 1234
-* bash /home/lorisadmin/curl_query.sh
+* bash /data/loris/aueb/curl_query.sh
 If you attempt to login now the design will not load display correctly, to fix that you need to execute the update_interface.sql to the mysql-container.
 
 At the mysql-container execute
@@ -29,7 +29,7 @@ INSERT INTO Visit_Windows (Visit_label,  WindowMinDays, WindowMaxDays, OptimumMi
 ```
 
 (Note that when you execute imaging_install_aueb.sh, your working directory must be /data/loris/bin/mri, also you must source beforehand minc-toolkit-config.sh )
-* source /opt/minc/1.9.17/minc-toolkit-config.csh
+* source /opt/minc/1.9.17/minc-toolkit-config.sh
 * cd /data/loris/bin/mri
 * execute imaging_install_aueb.sh in /data/loris/bin/mri
 * bash imaging_install_aueb.sh

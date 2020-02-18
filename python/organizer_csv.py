@@ -42,7 +42,7 @@ def main():
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    organize_nifti(args.input_file, args.output_folder)
+    organize_nifti(args.input_file, output_folder)
 
 
 def organize_nifti(input_file, output_folder):

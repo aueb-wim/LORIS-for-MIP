@@ -8,12 +8,12 @@
 #4)It doesn't populate the Config tables with paths etc.
 ##################################
 
-#Create a temporary log for installation and delete it on completion 
+#Create a temporary log for installation and delete it on completion
 #@TODO make sure that /tmp is writable
 LOGFILE="/tmp/$(basename $0).$$.tmp"
 touch $LOGFILE
 trap "rm  $LOGFILE" EXIT
- 
+
 if [[ -n $(which mincheader) ]]; then
     echo ""
     echo "MINC Toolkit appears to be installed."
@@ -52,8 +52,8 @@ read -p "What is your email address? " email
 read -p "What prod file name would you like to use? default: prod " prodfilename
 if [ -z "$prodfilename" ]; then
     prodfilename="prod"
-fi 
- 
+fi
+
 read -p "Enter the list of Site names (space separated) " site
 mridir=`pwd`
 #read -p "Enter Full Loris-code directory path "   lorisdir
@@ -137,7 +137,7 @@ echo
 ######################Add the proper Apache group user #############################
 ####################################################################################
 if egrep ^www-data: /etc/group > $LOGFILE 2>&1;
-then 
+then
     group=www-data
 elif egrep ^www: /etc/group  > $LOGFILE 2>&1;
 then
@@ -227,3 +227,7 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$PROJ/data/tarchive/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='tarchiveLibraryDir')"
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$PROJ/bin/mri/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath') AND Value = '/data/%PROJECTNAME%/bin/mri/'"
 echo
+
+mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/loris_mandatory.sql
+mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/update_interface.sql
+mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/trigger.sql

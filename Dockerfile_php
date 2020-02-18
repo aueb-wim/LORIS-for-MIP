@@ -117,20 +117,29 @@ RUN ["cpanm", "--force", "Math::Round", "DBI", "DBD::mysql","Getopt::Tabular", \
 
 #RUN /bin/bash -c "source /opt/minc/1.9.17/minc-toolkit-config.sh"
 
-RUN mkdir /data/loris/python
-RUN mkdir /data/loris/aueb
-RUN mkdir /data/loris/post
+RUN mkdir /data
+RUN mkdir /data/loris/
+RUN mkdir /data/loris/python/
+RUN mkdir /data/loris/aueb/
+RUN mkdir /data/loris/post/
+RUN mkdir /data/loris/aueb/sql
+RUN mkdir /data/loris/dicom_in
 
 COPY ./mri_loris /data/loris/bin/mri
 COPY ./python/* /data/loris/python/
 COPY ./aueb_files/cred.txt /data/loris/aueb/cred.txt
 COPY ./aueb_files/installdb.php /data/loris/aueb/installdb.php
 COPY ./aueb_files/curl_query.sh /data/loris/aueb/curl_query.sh
+COPY ./sql /data/loris/aueb/sql
 
 RUN mkdir /data/incoming
 RUN mkdir /data/tmp
 RUN mkdir /data/loris/csvs
 RUN mkdir /data/loris/nifti_out
+
+COPY ./aueb_files/imaging_install_aueb.sh /data/loris/bin/mri
+
+#RUN cp -r /data/loris/bin/mri/uploadNeuroDB /data/loris/data/uploadNeuroDB
 
 RUN mkdir -m 2770 -p /data/loris/data/ \
  && mkdir -m 770 -p /data/loris/data/trashbin \
@@ -142,11 +151,6 @@ RUN mkdir -m 2770 -p /data/loris/data/ \
  && mkdir -m 770 -p /data/loris/data/bids_imports \
  && mkdir -m 770 -p /data/loris/bin/mri/dicom-archive/.loris_mri \
  && chown -R lorisadmin:lorisadmin /data/loris
-
-COPY ./aueb_files/imaging_install_aueb.sh /data/loris/bin/mri
-
-RUN cp -r /data/loris/bin/mri/uploadNeuroDB /data/loris/data/uploadNeuroDB
-
 RUN echo "source /data/loris/bin/mri/environment" >> /root/.bashrc
 RUN echo "source /data/loris/bin/mri/environment" >> /home/lorisadmin/.bashrc
 
