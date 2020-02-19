@@ -40,21 +40,29 @@ if [ ! -f "$MAKECHECK" ]; then
     exit
 fi
 
-read -p "What is the database name? " mysqldb
-read -p "What is the database host? " mysqlhost
-read -p "What is the MySQL user? " mysqluser
-stty -echo
-read -p "What is the MySQL password? " mysqlpass; echo
-stty echo
-read -p "What is the Linux user which the installation will be based on? " USER
-read -p "What is the project name? " PROJ   ##this will be used to create all the corresponding directories...i.e /data/gusto/bin.....
-read -p "What is your email address? " email
-read -p "What prod file name would you like to use? default: prod " prodfilename
-if [ -z "$prodfilename" ]; then
-    prodfilename="prod"
-fi
-
-read -p "Enter the list of Site names (space separated) " site
+#read -p "What is the database name? " mysqldb
+mysqldb="LORIS"
+#read -p "What is the database host? " mysqlhost
+mysqlhost="172.28.1.2"
+#read -p "What is the MySQL user? " mysqluser
+mysqluser="lorisuser"
+#stty -echo
+#read -p "What is the MySQL password? " mysqlpass; echo
+mysqlpass="neopass"
+#stty echo
+#read -p "What is the Linux user which the installation will be based on? " USER
+USER="root"
+#read -p "What is the project name? " PROJ   ##this will be used to create all the corresponding directories...i.e /data/gusto/bin.....
+PROJ="loris"
+#read -p "What is your email address? " email
+email=""
+# read -p "What prod file name would you like to use? default: prod " prodfilename
+# if [ -z "$prodfilename" ]; then
+#     prodfilename="prod"
+# fi 
+prodfilename="prod"
+#read -p "Enter the list of Site names (space separated) " site
+site="site1 site2"
 mridir=`pwd`
 #read -p "Enter Full Loris-code directory path "   lorisdir
 
@@ -62,65 +70,65 @@ mridir=`pwd`
 #################################################################################################
 ############################INSTALL THE PERL LIBRARIES###########################################
 #################################################################################################
-echo "Installing the perl libraries...This will take a few minutes..."
+#echo "Installing the perl libraries...This will take a few minutes..."
 #echo $rootpass | sudo perl -MCPAN -e shell
-cpan install Math::Round
-#echo $rootpass | sudo -S cpan install Bundle::CPAN
-cpan install DBI
-cpan install DBD::mysql
-cpan install Getopt::Tabular
-cpan install Time::JulianDay
-cpan install Path::Class
-cpan install Archive::Extract
-cpan install Archive::Zip
-cpan install Pod::Perldoc
-cpan install Pod::Markdown
-cpan install Pod::Usage
-cpan install JSON
-cpan install Moose
-cpan install MooseX::Privacy
-cpan install TryCatch
-cpan install Throwable
-echo
+# cpan install Math::Round
+# #echo $rootpass | sudo -S cpan install Bundle::CPAN
+# cpan install DBI
+# cpan install DBD::mysql
+# cpan install Getopt::Tabular
+# cpan install Time::JulianDay
+# cpan install Path::Class
+# cpan install Archive::Extract
+# cpan install Archive::Zip
+# cpan install Pod::Perldoc
+# cpan install Pod::Markdown
+# cpan install Pod::Usage
+# cpan install JSON
+# cpan install Moose
+# cpan install MooseX::Privacy
+# cpan install TryCatch
+# cpan install Throwable
+# echo
 
 ################################################################################
 ##Create the loris-mri python virtualenv and install the Python packages########
 ################################################################################
-echo "Creating loris-mri Python virtualenv in $mridir/python_virtualenvs/loris-mri-python/"
+#echo "Creating loris-mri Python virtualenv in $mridir/python_virtualenvs/loris-mri-python/"
 # create a directory in $mridir that will store python 3 virtualenv
-su $USER -c "mkdir -m 770 -p $mridir/python_virtualenvs/loris-mri-python"
-virtualenv $mridir/python_virtualenvs/loris-mri-python -p `which python3`
-source $mridir/python_virtualenvs/loris-mri-python/bin/activate
-echo "Installing the Python libraries into the loris-mri virtualenv..."
-pip3 install mysqlclient
-pip3 install mysql-connector
-pip3 install pybids
-pip3 install pyblake2
-pip3 install mne
-pip3 install google
-pip3 install protobuf
-# deactivate the virtualenv for now
-deactivate
+# su $USER -c "mkdir -m 770 -p $mridir/python_virtualenvs/loris-mri-python"
+# virtualenv $mridir/python_virtualenvs/loris-mri-python -p `which python3`
+# source $mridir/python_virtualenvs/loris-mri-python/bin/activate
+# echo "Installing the Python libraries into the loris-mri virtualenv..."
+# pip3 install mysqlclient
+# pip3 install mysql-connector
+# pip3 install pybids
+# pip3 install pyblake2
+# pip3 install mne
+# pip3 install google
+# pip3 install protobuf
+# # deactivate the virtualenv for now
+# deactivate
 
 #######################################################################################
 #############################Create directories########################################
 #######################################################################################
-echo "Creating the data directories"
-  su $USER -c "mkdir -m 2770 -p /data/$PROJ/data/"
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/trashbin"         #holds mincs that didn't match protocol
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/tarchive"         #holds tared dicom-folder
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/pic"              #holds jpegs generated for the MRI-browser
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/logs"             #holds logs from pipeline script
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/assembly"         #holds the MINC files
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/batch_output"     #contains the result of the SGE (queue)
-  su $USER -c "mkdir -m 770 -p /data/$PROJ/data/bids_imports"     #contains imported BIDS studies
-  su $USER -c "mkdir -m 770 -p $mridir/dicom-archive/.loris_mri"
-echo
+# echo "Creating the data directories"
+#   su $USER -c "mkdir -m 2770 -p /data/$PROJ/data/"
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/trashbin"         #holds mincs that didn't match protocol
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/tarchive"         #holds tared dicom-folder
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/pic"              #holds jpegs generated for the MRI-browser
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/logs"             #holds logs from pipeline script
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/assembly"         #holds the MINC files
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/batch_output"     #contains the result of the SGE (queue)
+#   su $USER -c "mkdir -m 770 -p /data/$PROJ/data/bids_imports"     #contains imported BIDS studies
+#   su $USER -c "mkdir -m 770 -p $mridir/dicom-archive/.loris_mri"
+# echo
 
 #####################################################################################
 ###############incoming directory ###################################################
 #####################################################################################
-su $USER -c "mkdir -m 2770 -p /data/incoming/"
+# su $USER -c "mkdir -m 2770 -p /data/incoming/"
 
 ###################################################################################
 #######set environment variables under .bashrc#####################################
@@ -152,25 +160,25 @@ fi
 ####################################################################################
 ######################change permissions ###########################################
 ####################################################################################
-#echo "Changing permissions"
+echo "Changing permissions"
 
 chmod -R 770 $mridir/dicom-archive/.loris_mri/
-chmod -R 770 /data/$PROJ/
-chmod -R 770 /data/incoming/
+# chmod -R 770 /data/$PROJ/
+# chmod -R 770 /data/incoming/
 
 # Making lorisadmin part of the apache group
-usermod -a -G $group $USER
+#usermod -a -G $group $USER
 
 #Setting group permissions for all files/dirs under /data/$PROJ/ and /data/incoming/
-chgrp $group -R /data/$PROJ/
-chgrp $group -R /data/incoming/
+#chgrp $group -R /data/$PROJ/
+#chgrp $group -R /data/incoming/
 
 #Setting group ID for all files/dirs under /data/$PROJ/data
-chmod -R g+s /data/$PROJ/data/
+#chmod -R g+s /data/$PROJ/data/
 
 #Setting group ID for all files/dirs under /data/incoming
-chmod -R g+s /data/incoming/
-echo
+#chmod -R g+s /data/incoming/
+#echo
 
 #####################################################################################
 ##########################change the prod file#######################################
@@ -201,21 +209,21 @@ echo
 ################################################################################################
 #####################################DICOM TOOLKIT##############################################
 ################################################################################################
-os_distro=$(lsb_release -si)
-if [ $os_distro  = "CentOS" ]; then
-    echo "You are running CentOS. Please also see Loris-MRI Readme for notes and links to further documentation in our main GitHub Wiki on how to install the DICOM Toolkit and other required dependencies."
-else
-    #Check if apt-get is install
-    APTGETCHECK=`which apt-get`
-    if [ ! -f "$APTGETCHECK" ]; then
-        echo "\nERROR: Unable to find apt-get"
-        echo "Please ask your sysadmin or install apt-get\n"
-        exit
-    fi
+# os_distro=$(lsb_release -si)
+# if [ $os_distro  = "CentOS" ]; then
+#     echo "You are running CentOS. Please also see Loris-MRI Readme for notes and links to further documentation in our main GitHub Wiki on how to install the DICOM Toolkit and other required dependencies."
+# else
+#     #Check if apt-get is install
+#     APTGETCHECK=`which apt-get`
+#     if [ ! -f "$APTGETCHECK" ]; then
+#         echo "\nERROR: Unable to find apt-get"
+#         echo "Please ask your sysadmin or install apt-get\n"
+#         exit
+#     fi
 
-    echo "Installing DICOM Toolkit (May prompt for sudo password)"
-    apt-get install dcmtk
-fi
+#     echo "Installing DICOM Toolkit (May prompt for sudo password)"
+#     apt-get install dcmtk
+# fi
 ######################################################################
 ###### Update the Database table, Config, with the user values #######
 ######################################################################
@@ -227,7 +235,6 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$PROJ/data/tarchive/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='tarchiveLibraryDir')"
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$PROJ/bin/mri/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath') AND Value = '/data/%PROJECTNAME%/bin/mri/'"
 echo
-
 mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/loris_mandatory.sql
 mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/update_interface.sql
 mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/trigger.sql

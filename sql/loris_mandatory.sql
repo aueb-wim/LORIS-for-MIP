@@ -1,4 +1,3 @@
-use LORIS;
 
 UPDATE `LORIS`.`psc` SET `MRI_alias`='DCC' WHERE `CenterID`='1';
 
@@ -7,3 +6,5 @@ INSERT INTO Visit_Windows (Visit_label,  WindowMinDays, WindowMaxDays, OptimumMi
 ALTER TABLE files ADD FileStudyID TEXT DEFAULT NULL;
 
 ALTER TABLE files ADD FileStudyComplete INT DEFAULT 0;
+
+ALTER TABLE files_qcstatus ADD ExportedBatch INT DEFAULT 0;

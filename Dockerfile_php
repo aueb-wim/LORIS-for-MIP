@@ -34,7 +34,7 @@ RUN a2enmod php7.2
 # Creating a User for LORIS
 RUN useradd -U -m -G sudo -s /bin/bash lorisadmin \
     && echo lorisadmin:12345678 | chpasswd \
-    && su - lorisadmin
+    && usermod -a -G www-data lorisadmin
 
 COPY ./loris /var/www/loris
 RUN chown -R lorisadmin.lorisadmin /var/www/loris
@@ -42,7 +42,7 @@ RUN chown -R lorisadmin.lorisadmin /var/www/loris
 COPY ./aueb_files/install_aueb.sh /var/www/loris/tools/install_aueb.sh
 
 WORKDIR /var/www/loris/tools
-RUN bash install_aueb.sh
+RUN su - lorisadmin && bash install_aueb.sh
 
 RUN a2enmod rewrite \
     && a2ensite loris \
@@ -74,14 +74,6 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x > install_node.sh \
     && apt-get install -y nodejs
 
 RUN make
-
-#WORKDIR /var/www/loris/htdocs
-#COPY ./other_files/installdb.php .
-#RUN cat /etc/php/7.2/apache2/php.ini | grep 'max_execution_time'
-#RUN sed -e 's/max_execution_time = 30/max_execution_time = 3000000/' -i /etc/php/7.2/apache2/php.ini
-#RUN php -f installdb.php
-
-#COPY other_files/config.xml /var/www/loris/project/config.xml
 
 #Install imaging pipeline
 RUN apt-get install -y \
@@ -117,13 +109,28 @@ RUN ["cpanm", "--force", "Math::Round", "DBI", "DBD::mysql","Getopt::Tabular", \
 
 #RUN /bin/bash -c "source /opt/minc/1.9.17/minc-toolkit-config.sh"
 
-RUN mkdir /data
-RUN mkdir /data/loris/
-RUN mkdir /data/loris/python/
-RUN mkdir /data/loris/aueb/
-RUN mkdir /data/loris/post/
-RUN mkdir /data/loris/aueb/sql
-RUN mkdir /data/loris/dicom_in
+
+RUN su lorisadmin && mkdir -m 2770 -p /data/loris/data/ \
+ && mkdir -m 770 -p /data/loris/data/trashbin \
+ && mkdir -m 770 -p /data/loris/data/tarchive \
+ && mkdir -m 770 -p /data/loris/data/pic \
+ && mkdir -m 770 -p /data/loris/data/logs \
+ && mkdir -m 770 -p /data/loris/data/assembly \
+ && mkdir -m 770 -p /data/loris/data/batch_output \
+ && mkdir -m 770 -p /data/loris/data/bids_imports \
+ && mkdir -m 770 -p /data/loris/bin/mri/dicom-archive/.loris_mri 
+ #&& chown -R lorisadmin:lorisadmin /data/loris
+
+RUN su lorisadmin && mkdir /data/loris/python/ \
+ && mkdir /data/loris/aueb/ \
+ && mkdir /data/loris/post \
+ && mkdir /data/incoming \
+ && mkdir /data/tmp \
+ && mkdir /data/loris/csvs \
+ && mkdir -m 2770 /data/loris/nifti_out
+
+
+COPY ./aueb_files/imaging_install_aueb.sh /data/loris/bin/mri
 
 COPY ./mri_loris /data/loris/bin/mri
 COPY ./python/* /data/loris/python/
@@ -132,30 +139,25 @@ COPY ./aueb_files/installdb.php /data/loris/aueb/installdb.php
 COPY ./aueb_files/curl_query.sh /data/loris/aueb/curl_query.sh
 COPY ./sql /data/loris/aueb/sql
 
-RUN mkdir /data/incoming
-RUN mkdir /data/tmp
-RUN mkdir /data/loris/csvs
-RUN mkdir /data/loris/nifti_out
+#RUN cp -r /data/loris/bin/mri/uploadNeuroDB /data/loris/data/uploadNeuroDB \
+RUN chown -R lorisadmin:lorisadmin /data/loris \
+ && chgrp www-data -R /data/loris \
+ && chgrp www-data -R /data/incoming \
+ && chmod -R g+s /data/loris/data/
 
-COPY ./aueb_files/imaging_install_aueb.sh /data/loris/bin/mri
+RUN python3 -m virtualenv --python=/usr/bin/python3 /data/loris/bin/mri/python_virtualenvs/loris-mri-python 
 
-#RUN cp -r /data/loris/bin/mri/uploadNeuroDB /data/loris/data/uploadNeuroDB
+RUN . /data/loris/bin/mri/python_virtualenvs/loris-mri-python/bin/activate \
+ && pip install mysqlclient pybids pyblake2 mne google protobuf mysql-connector \
+        requests==2.22.0 pandas==0.24.2 xmltodict==0.12.0 pydicom==1.3.0
 
-RUN mkdir -m 2770 -p /data/loris/data/ \
- && mkdir -m 770 -p /data/loris/data/trashbin \
- && mkdir -m 770 -p /data/loris/data/tarchive \
- && mkdir -m 770 -p /data/loris/data/pic \
- && mkdir -m 770 -p /data/loris/data/logs \
- && mkdir -m 770 -p /data/loris/data/assembly \
- && mkdir -m 770 -p /data/loris/data/batch_output \
- && mkdir -m 770 -p /data/loris/data/bids_imports \
- && mkdir -m 770 -p /data/loris/bin/mri/dicom-archive/.loris_mri \
- && chown -R lorisadmin:lorisadmin /data/loris
 RUN echo "source /data/loris/bin/mri/environment" >> /root/.bashrc
 RUN echo "source /data/loris/bin/mri/environment" >> /home/lorisadmin/.bashrc
 
-RUN apt-get install -y minc-tools
-RUN apt-get install -y file
+RUN apt-get install -y minc-tools file dcmtk
+
+
+WORKDIR /data/loris/
 
 EXPOSE 80
 

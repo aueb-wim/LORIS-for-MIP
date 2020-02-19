@@ -22,7 +22,7 @@ services:
       - "8088:80"
     volumes:
       - ./dicom_in/:/data/loris/dicom_in
-      - ./dicom_post/:/data/loris/post
+      - ./dicom_post/:/data/loris/dicom_post
       - ./nifti_out/:/data/loris/nifti_out
     links:
        - mysql

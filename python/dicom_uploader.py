@@ -250,11 +250,11 @@ for folder in os.listdir( ):
     p.communicate()
 
     #/data/incoming/DCC000006_6_V1.tar.gz N DCC000006_6_V1
-    f = open("/home/lorisadmin/input.txt", "w")
+    f = open("/tmp/input.txt", "w")
     f.write( "/data/incoming/" + tar_name + " N " + patient_name_dicom )
     f.close()
 
-    file_input = open("/home/lorisadmin/input.txt", "r")
+    file_input = open("/tmp/input.txt", "r")
     p_upload = subprocess.Popen( ["/data/loris/bin/mri/batch_uploads_imageuploader.pl", "-profile", "prod"], stdin=file_input ) # Success!
     p_upload.communicate()
 
