@@ -34,6 +34,11 @@ def UpdateComplete( FileID ):
     mydb.commit()
     return mycursor.rowcount == 1
 
+def UpdateSelected( FileID ):
+    mycursor.execute("UPDATE files_qcstatus SET Selected = 'true' WHERE FileID = %s LIMIT 1", (FileID,) )
+    mydb.commit()
+    return mycursor.rowcount == 1
+
 def UpdateFiles( ):
     mycursor.execute("""SELECT
                         	fqc.FileID, File, FileStudyID
@@ -74,7 +79,11 @@ def UpdateFiles( ):
         for fileid in ids:
             try:
                 if UpdateComplete( fileid ):
-                    print( "Update [OK]" )
+                    print( "StudyComplete [OK]")
+                    if UpdateSelected( fileid ):
+                        print( "Selected [OK]" )
+                    else:
+                        pritn( "Failed to update Selected [FAIL]")
                 else:
                     print( "[FAIL]")
             except:
