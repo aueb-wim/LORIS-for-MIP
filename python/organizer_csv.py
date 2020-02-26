@@ -19,6 +19,16 @@ def getval(x):
 def FindNextSubFolder( path ):
     os.chdir( path )
     L  = os.listdir()
+    #print( L )
+    i = 0
+    len_L = len(L)
+    while i < len_L:
+        if not L[i].startswith( "batch" ):
+            del L[i]
+            i -= 1
+            len_L -= 1
+        i += 1
+    #print( L )
     def f(x):
         return int( x.split("_")[1] )
     def lastEl( x ):
@@ -93,7 +103,10 @@ def organize_nifti(input_file, output_folder):
 
         if not os.path.exists(nii_file_output_fullpath):
             os.makedirs(nii_file_output_fullpath)
+        nii_file = nii_file[:-3] + "nii"
         logging.info("Copying %s to %s..." % (nii_file, nii_file_output_fullpath))
+        print(nii_file, nii_file_output_fullpath)
+
         shutil.copy2(nii_file, nii_file_output_fullpath)
     logging.info("DONE")
 
