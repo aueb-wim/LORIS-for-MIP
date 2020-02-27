@@ -43,7 +43,7 @@ def decode(x):
     return x.decode('UTF-8')
 
 def CandidateExist( patientID ):
-    print( patientID )
+    # print( patientID )
     mycursor.execute("SELECT externalid FROM candidate WHERE externalid = %s LIMIT 1", (patientID,) )
     myresult = mycursor.fetchall()
     #True if externalid is in candidates
