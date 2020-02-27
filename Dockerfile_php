@@ -118,7 +118,7 @@ RUN su lorisadmin && mkdir -m 2770 -p /data/loris/data/ \
  && mkdir -m 770 -p /data/loris/data/assembly \
  && mkdir -m 770 -p /data/loris/data/batch_output \
  && mkdir -m 770 -p /data/loris/data/bids_imports \
- && mkdir -m 770 -p /data/loris/bin/mri/dicom-archive/.loris_mri 
+ && mkdir -m 770 -p /data/loris/bin/mri/dicom-archive/.loris_mri
  #&& chown -R lorisadmin:lorisadmin /data/loris
 
 RUN su lorisadmin && mkdir /data/loris/python/ \
@@ -133,7 +133,7 @@ RUN su lorisadmin && mkdir /data/loris/python/ \
 COPY ./aueb_files/imaging_install_aueb.sh /data/loris/bin/mri
 
 COPY ./mri_loris /data/loris/bin/mri
-COPY ./python/* /data/loris/python/
+#COPY ./python/* /data/loris/python/
 COPY ./aueb_files/cred.txt /data/loris/aueb/cred.txt
 COPY ./aueb_files/installdb.php /data/loris/aueb/installdb.php
 COPY ./aueb_files/curl_query.sh /data/loris/aueb/curl_query.sh
@@ -145,7 +145,7 @@ RUN chown -R lorisadmin:lorisadmin /data/loris \
  && chgrp www-data -R /data/incoming \
  && chmod -R g+s /data/loris/data/
 
-RUN python3 -m virtualenv --python=/usr/bin/python3 /data/loris/bin/mri/python_virtualenvs/loris-mri-python 
+RUN python3 -m virtualenv --python=/usr/bin/python3 /data/loris/bin/mri/python_virtualenvs/loris-mri-python
 
 RUN . /data/loris/bin/mri/python_virtualenvs/loris-mri-python/bin/activate \
  && pip install mysqlclient pybids pyblake2 mne google protobuf mysql-connector \

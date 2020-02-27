@@ -22,8 +22,9 @@ services:
       - "8088:80"
     volumes:
       - ./dicom_in/:/data/loris/dicom_in
-      - ./dicom_post/:/data/loris/dicom_post
+      - ./dicom_post/:/dataloris/dicom_post
       - ./nifti_out/:/data/loris/nifti_out
+      - ./python/:/data/loris/python
     links:
        - mysql
     depends_on:

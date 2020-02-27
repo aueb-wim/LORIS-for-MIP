@@ -27,21 +27,14 @@ INSERT INTO Visit_Windows (Visit_label,  WindowMinDays, WindowMaxDays, OptimumMi
 (Note that when you execute imaging_install_aueb.sh, your working directory must be /data/loris/bin/mri, also you must source beforehand minc-toolkit-config.sh )
 * source /opt/minc/1.9.17/minc-toolkit-config.sh
 * cd /data/loris/bin/mri
-* execute imaging_install_aueb.sh in /data/loris/bin/mri
+and execute imaging_install_aueb.sh in /data/loris/bin/mri
 * bash imaging_install_aueb.sh
 
-Exit the container and relogin.
+And now the setup has been completed and you are ready to make use of the containers.
 
-Now when you login into loris_apache container you must see that your environment has been update to (loris-mri-python).
+Note that when you login into loris_apache container you must see that your environment is displayed as (loris-mri-python).
 
-For the execution of the python scripts located in /data/loris/bin/mri/python
-
-
-Change whatever is 'LORIS' to 'loris' as marked in the red lines.
-![](docs/pics/fix_paths_configuration_admin_panel_red_line.png)
-
-To finish the docker setup check Quality Control section.
-
+For the execution of the python scripts proceed to /data/loris/python
 
 6. Quality control
 
