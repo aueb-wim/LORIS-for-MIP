@@ -25,6 +25,7 @@ services:
       - ./dicom_post/:/data/loris/dicom_post
       - ./nifti_out/:/data/loris/nifti_out
       - ./python/:/data/loris/python
+      - ./batch_csvs:/data/loris/csvs
     links:
        - mysql
     depends_on:

@@ -240,6 +240,12 @@ for folder in os.listdir( ):
         p_rm = subprocess.Popen( [ "rm", z ], stdout=subprocess.PIPE)
         p_rm.communicate()
 
+    p_find = subprocess.Popen(["find" , folder,  "-type", "f"], stdout = subprocess.PIPE)
+    p_xarg = subprocess.Popen(['xargs', '-i', 'dcmconv', '--write-xfer-little', '{}', '{}'],
+                              stdin=p_find.stdout, stdout = subprocess.PIPE) 
+    p_find.communicate()
+    files_xargs = list( map( decode, p_xarg.communicate()[0].split() ) )
+    # print(files_xargs) 
     #print( minuTR, maxuTR, minuTE, maxuTE )
     #input()
     #continue
@@ -258,10 +264,16 @@ for folder in os.listdir( ):
     p_upload = subprocess.Popen( ["/data/loris/bin/mri/batch_uploads_imageuploader.pl", "-profile", "prod"], stdin=file_input ) # Success!
     p_upload.communicate()
 
-    p_mv = subprocess.Popen( [ "mv",  "./" + folder, "../post" ] ) # Success!
+    p_mv = subprocess.Popen( [ "mv",  "./" + folder, "../dicom_post" ] ) # Success!
     p_mv.communicate()
+    p_rmove = subprocess.Popen( [ "rm", "-rf", "../dicom_post" + "/" + folder ] )
+    p_rmove.communicate()
 
     print( patientTR )
 
 print( maxuTR )
+os.chdir('/data/loris/python')
+p_fill = subprocess.Popen( [ "python",  "fill_studyid.py" ] )
+p_fill.communicate()
+
 exit(0)
