@@ -144,6 +144,26 @@ class Utility
         return $list;
     }
 
+    static function getBatchList(bool $study_site = true): array
+    {
+        $DB =& \Database::singleton();
+
+        // get the list of study sites - to be replaced by the Site object
+        $query = "SELECT Distinct(ExportedBatch) as eb FROM files_qcstatus ";
+        /*if ($study_site) {
+            $query .= "WHERE Study_site='Y'";
+        }*/
+        $result = $DB->pselect($query, array());
+
+        // fix the array
+        $list = array();
+        foreach ($result as $row) {
+            $list[ $row["eb"] ] = $row["eb"];
+        }
+        //natcasesort($list);
+        return $list;
+    }
+
 
     /**
      * Get the list of sites as an associative array
@@ -578,7 +598,7 @@ class Utility
         $DB            =& \Database::singleton();
         $instruments   = array();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
              ORDER BY Full_name",
             array()
         );
@@ -917,4 +937,3 @@ class Utility
         return $languages;
     }
 }
-

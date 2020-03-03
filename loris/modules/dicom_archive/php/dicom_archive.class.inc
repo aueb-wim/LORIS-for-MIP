@@ -94,7 +94,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
             },
             json_decode($table->toJSON(\User::singleton()), true)
         );
-        $options = array('sites' => \Utility::getSiteList());
+        console.log($arr);
+        $options = array('ExportedBatch' => \Utility::getBatchList());
         return json_encode(
             [
              'data'         => $arr,
@@ -134,4 +135,3 @@ class Dicom_Archive extends \NDB_Menu_Filter
         );
     }
 }
-

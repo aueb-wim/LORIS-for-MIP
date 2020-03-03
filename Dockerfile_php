@@ -157,6 +157,8 @@ RUN echo "source /data/loris/bin/mri/environment" >> /home/lorisadmin/.bashrc
 
 RUN apt-get install -y minc-tools file dcmtk
 
+RUN rm -r /var/www/loris/modules/dicom_archive/*
+#RUN rm -r /var/www/loris/modules/dicom_archive/
 
 WORKDIR /data/loris/
 

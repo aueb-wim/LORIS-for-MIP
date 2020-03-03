@@ -39,6 +39,20 @@ def UpdateSelected( FileID ):
     mydb.commit()
     return mycursor.rowcount == 1
 
+def UpdateExportedBatch( ExportedBatch, FileID ):
+    mycursor.execute("UPDATE files_qcstatus SET ExportedBatch = %s WHERE FileID = %s LIMIT 1", (ExportedBatch,FileID,) )
+    mydb.commit()
+    return mycursor.rowcount == 1
+
+
+def GetMaximumExportedBatch():
+    mycursor.execute("Select max(ExportedBatch)+1 FROM files_qcstatus LIMIT 1" )#.fetchone()
+    result = mycursor.fetchone()[0]
+    return result
+
+next_batch = GetMaximumExportedBatch()
+#print( GetMaximumExportedBatch() )
+
 def UpdateFiles( ):
     mycursor.execute("""SELECT
                         	fqc.FileID, File, FileStudyID
@@ -79,16 +93,20 @@ def UpdateFiles( ):
         for fileid in ids:
             try:
                 if UpdateComplete( fileid ):
-                    print( "StudyComplete [OK]")
+                    print( "StudyComplete [OK]" )
                     if UpdateSelected( fileid ):
                         print( "Selected [OK]" )
+                        if UpdateExportedBatch( next_batch, fileid ):
+                            print( "Batch [OK]" )
+                        else:
+                            print( "Failed to update Batch [FAIL]" )
                     else:
-                        pritn( "Failed to update Selected [FAIL]")
+                        pritn( "Failed to update Selected [FAIL]" )
                 else:
                     print( "[FAIL]")
             except:
                 print( "Could not update fileid", fileid )
-        
+
         p_organ = subprocess.Popen( [ "python", "organizer_csv.py", prefix + csv_filename ], stdout=subprocess.PIPE)
         p_organ.communicate()
     else:
