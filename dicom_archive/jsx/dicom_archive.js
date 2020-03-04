@@ -137,14 +137,34 @@ class DicomArchive extends Component {
       }},
     ];
 
+    function myAjax() {
+      a = $.ajax({
+           type: 'POST',
+           url: 'http://localhost:8088/produce_exports.php',
+           data: {action: 'call_this'},
+           success: function(html) {
+             document.getElementById( 'stat' ).innerHTML = html.split( '<hr>')[1];
+         },
+      });
+      return a;
+    }
+
+    function GoBatch() {
+        b=myAjax();
+    }
+
     return (
-      <FilterableDataTable
-        name="dicom_filter"
-        title='Dicom Archive'
-        data={this.state.data.data}
-        fields={fields}
-        getFormattedCell={this.formatColumn}
-      />
+        <div id="container">
+            <button onClick={GoBatch}>Export Batch</button>
+            <label id="stat"></label>
+          <FilterableDataTable
+            name="dicom_filter"
+            title='Dicom Archive'
+            data={this.state.data.data}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+          />
+      </div>
     );
   }
 }
