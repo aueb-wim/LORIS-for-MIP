@@ -96,6 +96,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         );
         //$options = array('sites' => \Utility::getSiteList());
         $options = array('batches' => \Utility::getBatchList());
+        //var_dump( $options );
         return json_encode(
             [
              'data'         => $arr,

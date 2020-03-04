@@ -160,7 +160,7 @@ class Utility
         foreach ($result as $row) {
             $list[ $row["eb"] ] = $row["eb"];
         }
-        //natcasesort($list);
+        natcasesort($list);
         return $list;
     }
 

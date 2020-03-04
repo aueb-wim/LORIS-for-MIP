@@ -50,11 +50,14 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             s.CenterID as Site,
             t.TarchiveID as TarchiveID,
             s.ID as SessionID,
-            s.CenterID
+            s.CenterID,
+            qf.ExportedBatch as ExportedBatch
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
-            WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
+                  LEFT JOIN files f ON (f.SessionID=t.SessionID)
+                  LEFT JOIN files_qcstatus qf ON (f.FileID=qf.FileID)
+            WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y';",
             array()
         );
     }
