@@ -238,3 +238,6 @@ echo
 mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/loris_mandatory.sql
 mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/update_interface.sql
 mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/trigger.sql
+
+cd /var/www/loris/
+make

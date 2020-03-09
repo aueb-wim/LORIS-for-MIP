@@ -126,7 +126,7 @@ RUN su lorisadmin && mkdir /data/loris/python/ \
  && mkdir /data/loris/post \
  && mkdir /data/incoming \
  && mkdir /data/tmp \
- && mkdir /data/loris/csvs \
+ && mkdir -m 2777 /data/loris/csvs \
  && mkdir -m 2770 /data/loris/nifti_out
 
 
