@@ -37,7 +37,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
     function __construct()
     {
         parent::__construct(
-            "SELECT t.PatientID as `Patient ID`,
+            "SELECT DISTINCT * FROM (SELECT t.PatientID as `Patient ID`,
             t.PatientName as `Patient Name`,
             t.PatientSex as Sex,
             t.PatientDoB as `Date of birth`,
@@ -58,7 +58,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
                   LEFT JOIN files f ON (f.SessionID=t.SessionID)
                   LEFT JOIN files_qcstatus qf ON (f.FileID=qf.FileID)
-            WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y';",
+            WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y') AS combined;",
             array()
         );
     }

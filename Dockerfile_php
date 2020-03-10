@@ -147,6 +147,8 @@ COPY ./sql /data/loris/aueb/sql
 RUN chown -R lorisadmin:lorisadmin /data/loris \
  && chgrp www-data -R /data/loris \
  && chgrp www-data -R /data/incoming \
+ && chgrp www-data -R /data/loris/csvs \
+ && chgrp www-data -R /data/loris/nifti_out \
  && chmod -R g+s /data/loris/data/
 
 RUN python3 -m virtualenv --python=/usr/bin/python3 /data/loris/bin/mri/python_virtualenvs/loris-mri-python
