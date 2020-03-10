@@ -117,6 +117,7 @@ class DicomArchive extends Component {
      * queried columns in _setupVariables() in dicom_archive.class.inc
      */
     const options = this.state.data.fieldOptions;
+    const options2 = this.state.data.fieldOptions2;
     const fields = [
       {label: 'Patient ID', show: true},
       {label: 'Patient Name', show: true},
@@ -134,6 +135,11 @@ class DicomArchive extends Component {
         name: 'ExportedBatch',
         type: 'select',
         options: options.batches,
+      }},
+      {label: 'StudyID', show: true, filter: {
+        name: 'StudyID',
+        type: 'select',
+        options: options2.studyids,
       }},
     ];
 

@@ -96,11 +96,13 @@ class Dicom_Archive extends \NDB_Menu_Filter
         );
         //$options = array('sites' => \Utility::getSiteList());
         $options = array('batches' => \Utility::getBatchList());
+        $options2 = array('studyids' => \Utility::getStudyList());
         //var_dump( $options );
         return json_encode(
             [
              'data'         => $arr,
              'fieldOptions' => $options,
+             'fieldOptions2' => $options2,
             ]
         );
     }

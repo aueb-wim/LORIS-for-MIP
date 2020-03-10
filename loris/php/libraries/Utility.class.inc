@@ -164,6 +164,26 @@ class Utility
         return $list;
     }
 
+    static function getStudyList(bool $study_site = true): array
+    {
+        $DB =& \Database::singleton();
+
+        // get the list of study sites - to be replaced by the Site object
+        $query = "SELECT Distinct(FileStudyID) as sid FROM files ";
+        /*if ($study_site) {
+            $query .= "WHERE Study_site='Y'";
+        }*/
+        $result = $DB->pselect($query, array());
+
+        // fix the array
+        $list = array();
+        foreach ($result as $row) {
+            $list[ $row["sid"] ] = $row["sid"];
+        }
+        natcasesort($list);
+        return $list;
+    }
+
 
     /**
      * Get the list of sites as an associative array

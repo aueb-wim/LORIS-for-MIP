@@ -51,7 +51,8 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             t.TarchiveID as TarchiveID,
             s.ID as SessionID,
             s.CenterID,
-            qf.ExportedBatch as ExportedBatch
+            qf.ExportedBatch as ExportedBatch,
+            f.FileStudyID as StudyID
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
