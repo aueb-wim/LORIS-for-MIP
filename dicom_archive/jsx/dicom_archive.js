@@ -161,7 +161,7 @@ class DicomArchive extends Component {
 
     return (
         <div id="container">
-            <button onClick={GoBatch}>Export Batch</button>
+            <button class="btn btn-primary" onClick={GoBatch}>Export Batch</button>
             <label id="stat"></label>
           <FilterableDataTable
             name="dicom_filter"
