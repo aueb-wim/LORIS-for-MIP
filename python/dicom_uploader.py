@@ -140,6 +140,9 @@ minuTR, maxuTR, minuTE, maxuTE, = GetT1Protocol()
 for folder in os.listdir( ):
     #files = subprocess.call(  )
 
+    if folder == "README.md":
+        continue
+
     p = subprocess.Popen( [ "find", "./" + folder, "-name", "*dcm" ], stdout=subprocess.PIPE)
     files = list( map( decode, p.communicate()[0].split() ) )
     print( files[0] )
@@ -242,10 +245,10 @@ for folder in os.listdir( ):
 
     p_find = subprocess.Popen(["find" , folder,  "-type", "f"], stdout = subprocess.PIPE)
     p_xarg = subprocess.Popen(['xargs', '-i', 'dcmconv', '--write-xfer-little', '{}', '{}'],
-                              stdin=p_find.stdout, stdout = subprocess.PIPE) 
+                              stdin=p_find.stdout, stdout = subprocess.PIPE)
     p_find.communicate()
     files_xargs = list( map( decode, p_xarg.communicate()[0].split() ) )
-    # print(files_xargs) 
+    # print(files_xargs)
     #print( minuTR, maxuTR, minuTE, maxuTE )
     #input()
     #continue
