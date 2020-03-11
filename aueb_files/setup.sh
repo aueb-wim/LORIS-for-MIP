@@ -14,6 +14,7 @@ echo "Done"
 echo "Updating folder permisions"
 chmod a+rw /data/loris/csvs
 chmod a+rw /data/loris/nifti_out
+chmod a+rw /data/loris/dicom_post
 echo "Done"
 
 echo "Installation completed"

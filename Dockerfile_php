@@ -141,6 +141,7 @@ COPY ./mri_loris /data/loris/bin/mri
 COPY ./aueb_files/cred.txt /data/loris/aueb/cred.txt
 COPY ./aueb_files/installdb.php /data/loris/aueb/installdb.php
 COPY ./aueb_files/curl_query.sh /data/loris/aueb/curl_query.sh
+COPY ./aueb_files/setup.sh /data/loris/aueb/setup.sh
 COPY ./sql /data/loris/aueb/sql
 
 #RUN cp -r /data/loris/bin/mri/uploadNeuroDB /data/loris/data/uploadNeuroDB \
