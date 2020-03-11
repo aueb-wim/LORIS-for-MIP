@@ -6,7 +6,7 @@ echo "Building docker images"
 docker-compose build
 
 echo "Running docker containers"
-docker-compose up
+docker-compose up -d
 
 echo "setting up loris container"
 
