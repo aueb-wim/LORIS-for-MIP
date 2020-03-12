@@ -127,11 +127,11 @@ RUN su lorisadmin && mkdir -m 2770 -p /data/loris/data/ \
 
 RUN su lorisadmin && mkdir /data/loris/python/ \
  && mkdir /data/loris/aueb/ \
- && mkdir /data/loris/post \
  && mkdir /data/incoming \
  && mkdir /data/tmp \
  && mkdir -m 2777 /data/loris/csvs \
- && mkdir -m 2770 /data/loris/nifti_out
+ && mkdir -m 2770 /data/loris/nifti_out \
+ && mkdir -m 2770 /data/loris/dicom_post
 
 
 COPY ./aueb_files/imaging_install_aueb.sh /data/loris/bin/mri
@@ -150,6 +150,7 @@ RUN chown -R lorisadmin:lorisadmin /data/loris \
  && chgrp www-data -R /data/incoming \
  && chgrp www-data -R /data/loris/csvs \
  && chgrp www-data -R /data/loris/nifti_out \
+ && chgrp www-data -R /data/loris/dicom_post
  && chmod -R g+s /data/loris/data/
 
 RUN python3 -m virtualenv --python=/usr/bin/python3 /data/loris/bin/mri/python_virtualenvs/loris-mri-python

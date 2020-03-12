@@ -235,6 +235,3 @@ mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPD
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$PROJ/data/tarchive/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='tarchiveLibraryDir')"
 mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$PROJ/bin/mri/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath') AND Value = '/data/%PROJECTNAME%/bin/mri/'"
 echo
-mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/loris_mandatory.sql
-mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/update_interface.sql
-mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/trigger.sql
