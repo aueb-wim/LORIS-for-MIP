@@ -20,41 +20,12 @@ Optional tools
 2. In the folder `/data/LORIS/` run:
   
 ```bash
-docker-compose up --build
-```
-
-3. Get in the loris_apache container by running:
-
-```bash
-docker exec -it loris_apache bash
-```
-
-Note that when you login into loris_apache container you must see that your environment is displayed as (loris-mri-python).
-
-4. In loris_apache container run:
-
-```bash
-bash /data/loris/aueb/curl_query.sh
-```
-
-5. In loris_apache container run:
-
-```bash
-source /opt/minc/1.9.17/minc-toolkit-config.sh
-```
-
-6. In loris_apache container run:
-
-```bash
-cd /data/loris/bin/mri
-bash imaging_install_aueb.sh
+bash install.sh
 ```
 
 (Note that when you execute imaging_install_aueb.sh, your working directory must be /data/loris/bin/mri, also you must source beforehand minc-toolkit-config.sh )
 
 #### Notes
-
-`curl_query.sh` creates the LORIS db schema, mysqluser and frontend user of loris
 
 * Mysql root access -> 172.28.1.2, root, neopass
 * for Mysql loris user -> lorisuser, neopass
