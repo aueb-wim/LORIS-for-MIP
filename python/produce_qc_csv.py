@@ -107,7 +107,8 @@ def UpdateFiles( ):
             except:
                 print( "Could not update fileid", fileid )
 
-        p_organ = subprocess.Popen( [ "python", "organizer_csv.py", prefix + csv_filename ], stdout=subprocess.PIPE)
+        p_organ = subprocess.Popen( ["/data/loris/bin/mri/python_virtualenvs/loris-mri-python/bin/python",
+                                     "organizer_csv.py", prefix + csv_filename ], stdout=subprocess.PIPE)
         p_organ.communicate()
     else:
         print( "There is nothing to be saved" )
