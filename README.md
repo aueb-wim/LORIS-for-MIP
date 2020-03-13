@@ -65,3 +65,14 @@ dicom_uploader.py will process each dicom-folder within the folder `/data/LORIS/
 ### Performing Quality Control check using LORIS
 
 Open a web browser in `<miphospital_serverIP>:8088` and log in LORIS. The defualt user is **lorisuser** and password **1234**.
+
+In `Candidate -> Access Profile` page, the user can see all the patients imported into LORIS. Each patient (candidate in LORIS terms) has two internal indentifier columns, `PSCID` and `DCCID`. In this table the user can be informed about the patient gender, DoB and the total visit number. The external `PatientID` and `StudyID` are stored in the LORIS database and are accessable in `Imaging -> DICOM Archive` page.
+
+In `Imaging -> Imaging Browser` page there are all the patient's MRI visits represented as rows in a table. By clicking in the `native` link in a row under the column `Links`, the user can see all the MRI scans series that the patient had in that particular MRI Session.  
+
+In `Imaging Browser -> View Session` page the user can pick and view any MRI series in the **Brain Browser**. By default, all the MRI series have `QC status` flag set to `Pass` when imported into LORIS. The user could set the `QC status` to `Fail` and that MRI series would not be exported into the **Data Factory** imaging pipeline.
+
+In `Imaging -> DICOM Archive`, the user can export all the MRI series that have `QC status` set to `Pass` in the `View Session` page, and haven't be exported previously, by pressing the `Export Batch` button. Also, the user can view for every MRI scan that has been exported the corresponding batch number. 
+
+Each batch of MRIs Series are stored in the `nifti_out` folder, with folder name `batch_` + `<number>`. The nifti files are stored in a folder structure that is compliant with the Data Factory requirements of the Imaging Pipeline. 
+ 
