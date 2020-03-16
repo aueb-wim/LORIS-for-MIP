@@ -8,6 +8,16 @@ docker-compose build
 echo "Running docker containers"
 docker-compose up -d
 
+while [ 1 -eq 1 ]
+do
+   docker inspect loris_mysql | grep "Running"
+   if [ $? -eq 0 ]
+   then
+       echo "mysql container is up"
+       break
+   fi
+done
+
 echo "setting up loris container"
 
 docker exec -it loris_apache bash /data/loris/aueb/setup.sh
