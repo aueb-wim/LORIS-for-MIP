@@ -40,8 +40,12 @@ COPY ./loris /var/www/loris
 RUN chown -R lorisadmin.lorisadmin /var/www/loris
 
 RUN rm -r /var/www/loris/modules/dicom_archive/*
+RUN rm -r /var/www/loris/modules/imaging_browser/*
+RUN rm -r /var/www/loris/modules/candidate_list/*
 
 COPY ./dicom_archive /var/www/loris/modules/dicom_archive/
+COPY ./dicom_archive /var/www/loris/modules/imaging_browser/
+COPY ./dicom_archive /var/www/loris/modules/candidate_list/
 
 COPY ./aueb_files/install_aueb.sh /var/www/loris/tools/install_aueb.sh
 
