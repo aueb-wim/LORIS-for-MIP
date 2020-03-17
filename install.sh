@@ -14,6 +14,8 @@ do
    if [ $? -eq 0 ]
    then
        echo "mysql container is up"
+       # container my be running but is not fully up, so wait a bit
+       sleep 2m
        break
    fi
 done
