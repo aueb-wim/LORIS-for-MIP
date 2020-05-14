@@ -12,6 +12,12 @@ Optional tools
 
 * [HBP-MIP Data Quality Control Tool](https://github.com/HBPMedical/DataQualityControlTool)
 
+### Reserved ports
+
+* 8082: for MySQL 5.7 container
+* 8088: for apache-php container 
+
+These ports may change in the configuration (just edit docker-compose.yml file). 
 
 ## Deployment steps in MIP hospital local server
 
