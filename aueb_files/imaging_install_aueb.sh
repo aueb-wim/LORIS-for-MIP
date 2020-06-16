@@ -43,7 +43,7 @@ fi
 #read -p "What is the database name? " mysqldb
 mysqldb="LORIS"
 #read -p "What is the database host? " mysqlhost
-mysqlhost="172.28.1.2"
+mysqlhost=$MYSQL_HOST
 #read -p "What is the MySQL user? " mysqluser
 mysqluser="lorisuser"
 #stty -echo

@@ -93,7 +93,7 @@ function tplvar($name, $value)
     $tpl_data[$name] = $value;
 }
 
-tplvar('dbhost', '172.28.1.2');
+tplvar('dbhost', $_ENV['MYSQL_HOST']);
 tplvar('dbadminuser', 'root');
 tplvar('dbadminpassword', 'neopass');
 tplvar('dbname', 'LORIS');

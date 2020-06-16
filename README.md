@@ -33,7 +33,7 @@ bash install.sh
 
 #### Notes
 
-* Mysql root access -> 172.28.1.2, root, neopass
+* Mysql root access -> root, neopass
 * for Mysql loris user -> lorisuser, neopass
 * loris frontpage user -> lorisuser, 1234
 

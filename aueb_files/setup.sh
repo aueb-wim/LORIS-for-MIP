@@ -12,9 +12,9 @@ bash imaging_install_aueb.sh
 echo "Done"
 
 echo "Updateting mysql and frontent users in LORIS database"
-mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/loris_mandatory.sql
-mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/update_interface.sql
-mysql -u root --password=neopass -h 172.28.1.2 --database=LORIS < /data/loris/aueb/sql/trigger.sql
+mysql -u root --password=neopass -h $MYSQL_HOST --database=LORIS < /data/loris/aueb/sql/loris_mandatory.sql
+mysql -u root --password=neopass -h $MYSQL_HOST --database=LORIS < /data/loris/aueb/sql/update_interface.sql
+mysql -u root --password=neopass -h $MYSQL_HOST --database=LORIS < /data/loris/aueb/sql/trigger.sql
 echo "Done"
 
 echo "Updating folder permisions"
